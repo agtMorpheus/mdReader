@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -128,6 +128,90 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+/* ============================================================
+   Focus Visible — keyboard navigation ring
+   Using :focus-visible so mouse users are never shown the ring
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Remove browser default outline — replaced above */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Specific overrides where border-radius / shape needs matching */
+.btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+  border-radius: 0.5rem;
+}
+
+.btn-icon:focus-visible {
+  border-radius: 50%;
+}
+
+.btn-icon-small:focus-visible {
+  border-radius: 4px;
+}
+
+.btn-toggle:focus-visible {
+  border-radius: 0.35rem;
+}
+
+.btn-copy-code:focus-visible {
+  border-radius: 4px;
+}
+
+.btn-close:focus-visible,
+.btn-close-presentation:focus-visible {
+  border-radius: 4px;
+}
+
+.btn-slide-nav:focus-visible {
+  border-radius: 0.5rem;
+}
+
+.toc-link:focus-visible {
+  border-radius: 4px;
+}
+
+/* Search input lives inside the container — show ring on the container */
+.search-container:focus-within {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.search-container input:focus-visible {
+  outline: none; /* ring is shown on the container instead */
+}
+
+/* Range slider thumb focus */
+.range-control input[type="range"]:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   Drawer Backdrop
+   Injected dynamically by app.js when a drawer is open
+   ============================================================ */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 99; /* below drawer (z-index: 100) */
+  backdrop-filter: blur(1px);
+  animation: backdrop-in 0.2s ease forwards;
+}
+
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* App Containers */
@@ -364,6 +448,11 @@ body {
     width: auto;
   }
   #btn-presentation {
+    /* Show as icon-only on mobile — label hidden via .slides-label */
+    padding: 0.5rem;
+    min-width: 0;
+  }
+  #btn-presentation .slides-label {
     display: none;
   }
   .file-size {
@@ -644,6 +733,7 @@ body {
   display: flex;
   flex-direction: column;
   z-index: 100;
+  overflow-y: auto;       /* scroll when screen is short */
   transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 1.5rem;
 }
@@ -682,7 +772,7 @@ body {
 .settings-group.border-top {
   border-top: 1px solid var(--border-color);
   padding-top: 1.5rem;
-  margin-top: auto;
+  margin-top: 1rem; /* was auto — predictable in scrollable flex container */
 }
 
 .settings-group label {
@@ -739,7 +829,6 @@ body {
   height: 4px;
   background-color: var(--border-color);
   border-radius: 2px;
-  outline: none;
 }
 
 .range-val {
@@ -863,19 +952,113 @@ body {
 
 /* Tables styling */
 .markdown-body table {
-  width: 100%;
+  min-width: 100%;          /* allows wide tables to overflow the wrapper */
   border-collapse: collapse;
+  margin-bottom: 0;         /* margin lives on .table-wrapper instead */
+}
+
+/* Horizontal-scroll wrapper injected by markdown.js postProcess() */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
   margin-bottom: 1.2rem;
+  border-radius: 6px;
 }
 
 .markdown-body th, .markdown-body td {
   border: 1px solid var(--border-color);
   padding: 0.6rem 1rem;
+  white-space: nowrap; /* prevents cell text wrapping — triggers scroll instead */
 }
 
 .markdown-body th {
   background-color: var(--bg-sidebar);
   font-weight: 600;
+}
+
+/* Images: never overflow the reading column */
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+}
+
+/* ============================================================
+   Toast Notification System
+   ============================================================ */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 380px;
+  pointer-events: none;
+}
+
+.toast {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 0.85rem 1rem;
+  box-shadow: var(--shadow-lg);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  pointer-events: all;
+  animation: toast-in 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast.toast-error   { border-left: 4px solid #ef4444; }
+.toast.toast-info    { border-left: 4px solid var(--primary); }
+.toast.toast-warning { border-left: 4px solid #f59e0b; }
+
+.toast.toast-exit {
+  opacity: 0;
+  transform: translateX(120%);
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(120%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.toast-body {
+  flex: 1;
+  color: var(--text-main);
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+.toast-close:hover { color: var(--text-main); }
+
+/* Slide nav disabled state */
+.btn-slide-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 </style>
@@ -961,8 +1144,8 @@ body {
 </style>
 
   <!-- External CDNs -->
-  <!-- marked.js for markdown compiling -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@18.0.4/marked.min.js"></script>
+  <!-- marked.js for markdown compiling (UMD browser build) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@18.0.4/lib/marked.umd.js"></script>
   <!-- KaTeX for formula rendering -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
@@ -983,17 +1166,17 @@ body {
     <section id="landing-zone" class="landing-zone">
       <div class="drop-card" id="drop-card">
         <div class="drop-icon">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
             <polyline points="14 2 14 8 20 8"/>
             <line x1="12" y1="18" x2="12" y2="12"/>
             <polyline points="9 15 12 12 15 15"/>
           </svg>
         </div>
-        <h2>Load your Markdown Document</h2>
-        <p>Drag & drop your file here, or click to browse</p>
+        <h2>Carregar Documento Markdown</h2>
+        <p>Arraste o arquivo aqui ou clique para selecionar</p>
         <input type="file" id="file-input" accept=".md,.markdown,.txt" class="hidden-input">
-        <button class="btn btn-primary" id="browse-btn">Select File</button>
+        <button class="btn btn-primary" id="browse-btn">Selecionar Arquivo</button>
       </div>
     </section>
 
@@ -1002,21 +1185,22 @@ body {
       <!-- Top Navbar / Controls -->
       <header class="reader-header">
         <div class="header-left">
-          <button class="btn-icon" id="btn-back-landing" title="Load another file">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn-icon" id="btn-back-landing" title="Load another file" aria-label="Load another file">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
           </button>
-          <button class="btn-icon mobile-only" id="btn-toggle-toc" title="Table of Contents">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn-icon mobile-only" id="btn-toggle-toc" title="Table of Contents"
+            aria-label="Toggle table of contents" aria-expanded="false" aria-controls="toc-sidebar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="3" y1="12" x2="21" y2="12"></line>
               <line x1="3" y1="6" x2="21" y2="6"></line>
               <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
           </button>
           <div class="file-info">
-            <span class="file-name" id="display-file-name">document.md</span>
+            <span class="file-name" id="display-file-name">documento.md</span>
             <span class="file-size" id="display-file-size">0 KB</span>
           </div>
         </div>
@@ -1024,26 +1208,27 @@ body {
         <div class="header-right">
           <!-- Search Bar -->
           <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search in document..." aria-label="Search">
+            <input type="text" id="search-input" placeholder="Buscar no documento..." aria-label="Buscar">
             <div class="search-controls hidden" id="search-controls">
-              <span class="search-counter" id="search-counter">0 of 0</span>
-              <button class="btn-icon-small" id="search-prev" title="Previous match">▲</button>
-              <button class="btn-icon-small" id="search-next" title="Next match">▼</button>
+              <span class="search-counter" id="search-counter">0 de 0</span>
+              <button class="btn-icon-small" id="search-prev" title="Resultado anterior" aria-label="Resultado anterior">▲</button>
+              <button class="btn-icon-small" id="search-next" title="Próximo resultado" aria-label="Próximo resultado">▼</button>
             </div>
           </div>
 
           <!-- Utility Options -->
-          <button class="btn btn-secondary" id="btn-presentation" title="Presentation Mode">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn btn-secondary" id="btn-presentation" title="Modo de Apresentação" aria-label="Modo de apresentação">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
               <line x1="8" y1="21" x2="16" y2="21"/>
               <line x1="12" y1="17" x2="12" y2="21"/>
             </svg>
-            Slides
+            <span class="slides-label">Slides</span>
           </button>
 
-          <button class="btn-icon" id="btn-toggle-settings" title="Settings">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn-icon" id="btn-toggle-settings" title="Settings"
+            aria-label="Open appearance settings" aria-expanded="false" aria-controls="settings-panel">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="3"/>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
             </svg>
@@ -1056,12 +1241,12 @@ body {
         <!-- Sidebar Navigation (Table of Contents) -->
         <aside class="toc-sidebar" id="toc-sidebar">
           <div class="toc-header">
-            <h3>Table of Contents</h3>
-            <button class="btn-close mobile-only" id="btn-close-toc">&times;</button>
+            <h3>Índice</h3>
+            <button class="btn-close mobile-only" id="btn-close-toc" aria-label="Fechar índice">&times;</button>
           </div>
           <nav class="toc-nav" id="toc-nav-container">
-            <!-- Dynamically populated links -->
-            <p class="toc-empty">No headings found</p>
+            <!-- Links gerados dinamicamente -->
+            <p class="toc-empty">Sem títulos encontrados</p>
           </nav>
         </aside>
 
@@ -1076,20 +1261,20 @@ body {
       <!-- Settings Sidebar Panel -->
       <aside class="settings-panel" id="settings-panel">
         <div class="settings-header">
-          <h3>Appearance Settings</h3>
-          <button class="btn-close" id="btn-close-settings">&times;</button>
+          <h3>Configurações de Aparência</h3>
+          <button class="btn-close" id="btn-close-settings" aria-label="Fechar configurações">&times;</button>
         </div>
         
         <div class="settings-group">
-          <label>Theme</label>
+          <label>Tema</label>
           <div class="theme-buttons">
-            <button class="btn-toggle active" data-theme="light">Light</button>
-            <button class="btn-toggle" data-theme="dark">Dark</button>
+            <button class="btn-toggle active" data-theme="light">Claro</button>
+            <button class="btn-toggle" data-theme="dark">Escuro</button>
           </div>
         </div>
 
         <div class="settings-group">
-          <label>Font Family</label>
+          <label>Fonte</label>
           <div class="font-buttons">
             <button class="btn-toggle" data-font="sans">Outfit</button>
             <button class="btn-toggle active" data-font="serif">Libertinus</button>
@@ -1099,13 +1284,13 @@ body {
         <div class="settings-group">
           <label>Layout</label>
           <div class="layout-buttons">
-            <button class="btn-toggle active" data-layout="single">Single Column</button>
-            <button class="btn-toggle" data-layout="columns">Two Columns</button>
+            <button class="btn-toggle active" data-layout="single">Coluna Única</button>
+            <button class="btn-toggle" data-layout="columns">Duas Colunas</button>
           </div>
         </div>
 
         <div class="settings-group">
-          <label>Font Size</label>
+          <label>Tamanho da Fonte</label>
           <div class="range-control">
             <input type="range" id="setting-font-size" min="14" max="24" value="18">
             <span class="range-val" id="val-font-size">18px</span>
@@ -1113,7 +1298,7 @@ body {
         </div>
 
         <div class="settings-group">
-          <label>Line Spacing</label>
+          <label>Espaçamento de Linha</label>
           <div class="range-control">
             <input type="range" id="setting-line-height" min="1.4" max="2.0" step="0.1" value="1.6">
             <span class="range-val" id="val-line-height">1.6</span>
@@ -1121,7 +1306,7 @@ body {
         </div>
 
         <div class="settings-group">
-          <label>Max Layout Width</label>
+          <label>Largura Máxima</label>
           <div class="range-control">
             <input type="range" id="setting-max-width" min="600" max="1400" step="50" value="800">
             <span class="range-val" id="val-max-width">800px</span>
@@ -1129,14 +1314,14 @@ body {
         </div>
 
         <div class="settings-group border-top">
-          <button class="btn btn-secondary w-full" id="btn-reset-settings" style="color: var(--text-muted); border-color: transparent;">↺ Restore Default Settings</button>
+          <button class="btn btn-secondary w-full" id="btn-reset-settings" style="color: var(--text-muted); border-color: transparent;">↺ Restaurar Padrões</button>
         </div>
 
         <div class="settings-group border-top">
-          <label>Export Options</label>
+          <label>Exportar</label>
           <div class="export-actions">
-            <button class="btn btn-secondary w-full" id="btn-export-html">Export as HTML</button>
-            <button class="btn btn-secondary w-full" id="btn-export-pdf">Print / Export as PDF</button>
+            <button class="btn btn-secondary w-full" id="btn-export-html">Exportar como HTML</button>
+            <button class="btn btn-secondary w-full" id="btn-export-pdf">Imprimir / Exportar PDF</button>
           </div>
         </div>
       </aside>
@@ -1146,15 +1331,15 @@ body {
     <section id="presentation-mode" class="presentation-mode hidden">
       <header class="presentation-header">
         <span class="slide-title" id="slide-title">Presentation Title</span>
-        <button class="btn-close-presentation" id="btn-close-presentation" title="Exit Presentation Mode">&times;</button>
+        <button class="btn-close-presentation" id="btn-close-presentation" title="Exit Presentation Mode" aria-label="Exit presentation mode">&times;</button>
       </header>
       <div class="slide-container" id="slide-container">
         <!-- Dynamic active slide content -->
       </div>
       <footer class="presentation-footer">
-        <button class="btn-slide-nav" id="slide-prev">◀ Previous</button>
-        <span class="slide-counter" id="slide-counter">1 / 1</span>
-        <button class="btn-slide-nav" id="slide-next">Next ▶</button>
+        <button class="btn-slide-nav" id="slide-prev" aria-label="Slide anterior">◀ Anterior</button>
+        <span class="slide-counter" id="slide-counter" aria-live="polite" aria-atomic="true">1 / 1</span>
+        <button class="btn-slide-nav" id="slide-next" aria-label="Próximo slide">Próximo ▶</button>
       </footer>
     </section>
   </div>
@@ -1527,6 +1712,16 @@ body {
 
       // 2. Process Mermaid Diagrams
       this.renderMermaid();
+
+      // 3. Wrap tables for horizontal scrolling on narrow screens
+      element.querySelectorAll('table').forEach(table => {
+        if (!table.parentElement.classList.contains('table-wrapper')) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'table-wrapper';
+          table.parentNode.insertBefore(wrapper, table);
+          wrapper.appendChild(table);
+        }
+      });
     }
 
     /**
@@ -1788,7 +1983,8 @@ body {
       
       if (this.matches.length > 0) {
         this.currentIndex = 0;
-        this.highlightCurrent();
+        // Don't scroll on every keystroke — only on Enter / prev / next
+        this.highlightCurrent(false);
       }
 
       this.updateUI();
@@ -1861,14 +2057,25 @@ body {
     }
 
     /**
-     * Highlights the current search result
+     * Scroll the active match into view without changing index
      */
-    highlightCurrent() {
+    scrollToCurrent() {
+      if (this.matches.length === 0 || this.currentIndex < 0) return;
+      const el = this.matches[this.currentIndex];
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    /**
+     * Highlights the current search result.
+     * @param {boolean} shouldScroll  Scroll the match into view (default true).
+     */
+    highlightCurrent(shouldScroll = true) {
       this.matches.forEach((el, idx) => {
         if (idx === this.currentIndex) {
           el.classList.add('search-current');
-          // Scroll target match into view
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          if (shouldScroll) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         } else {
           el.classList.remove('search-current');
         }
@@ -1909,9 +2116,9 @@ body {
       } else {
         controls.classList.remove('hidden');
         if (this.matches.length === 0) {
-          counter.textContent = '0 of 0';
+          counter.textContent = '0 de 0';
         } else {
-          counter.textContent = `${this.currentIndex + 1} of ${this.matches.length}`;
+          counter.textContent = `${this.currentIndex + 1} de ${this.matches.length}`;
         }
       }
     }
@@ -1930,6 +2137,19 @@ body {
  */
 
 (function () {
+  /**
+   * Escape the 5 special HTML characters for safe injection into element
+   * attributes and text contexts (e.g. <title>).
+   */
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
   class DocumentExport {
     
     /**
@@ -1938,8 +2158,39 @@ body {
     exportToHTML(contentElement, fileName = 'document.html') {
       if (!contentElement) return;
 
-      const htmlContent = contentElement.innerHTML;
-      const documentTitle = document.title || 'Rendered Document';
+      // --- 1. Build a clean DOM clone, stripping interactive artifacts ---
+      // Copy buttons, active search highlights, and other post-processing
+      // elements are ephemeral UI — they should not appear in a static export.
+      const clone = contentElement.cloneNode(true);
+      clone.querySelectorAll('.btn-copy-code, .code-block-header, .search-highlight, .search-current')
+        .forEach(el => {
+          // Unwrap search-highlight spans, restoring their inner text
+          if (el.classList.contains('search-highlight') || el.classList.contains('search-current')) {
+            el.replaceWith(document.createTextNode(el.textContent));
+          } else {
+            el.remove();
+          }
+        });
+
+      // --- 2. Re-sanitize the cloned content with a conservative static profile ---
+      // Even though the render target was already sanitized, the export creates
+      // a new browsing context, so we sanitize again without iframe/embed support.
+      let htmlContent;
+      if (typeof DOMPurify !== 'undefined') {
+        htmlContent = DOMPurify.sanitize(clone.innerHTML, {
+          USE_PROFILES: { html: true, mathMl: true },
+          // No ADD_TAGS: the export is a static snapshot — no iframes allowed
+          FORBID_TAGS: ['iframe', 'embed', 'object', 'form', 'input', 'button', 'script'],
+          FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur']
+        });
+      } else {
+        // DOMPurify unavailable — fall back to the raw clone and warn
+        console.warn('export.js: DOMPurify not available; exporting raw innerHTML.');
+        htmlContent = clone.innerHTML;
+      }
+
+      // --- 3. Escape the document title for safe injection into <title> ---
+      const documentTitle = escapeHtml(document.title || 'Rendered Document');
 
       // Create a clean standalone HTML template including styling
       const fullHtml = `<!DOCTYPE html>
@@ -2106,7 +2357,12 @@ body {
      */
     start() {
       if (this.slides.length === 0) {
-        alert('No slides content parsed from document.');
+        if (typeof window.showToast === 'function') {
+          window.showToast('Nenhum slide encontrado. Use `---` para separar slides no documento.', 'info');
+        } else {
+          // fallback before app.js is fully loaded
+          console.warn('Presentation: no slides parsed from document.');
+        }
         return;
       }
 
@@ -2161,6 +2417,12 @@ body {
       if (this.title) {
         this.title.textContent = this.documentTitle;
       }
+
+      // Update nav button disabled state
+      const prevBtn = document.getElementById('slide-prev');
+      const nextBtn = document.getElementById('slide-next');
+      if (prevBtn) prevBtn.disabled = (this.currentIndex === 0);
+      if (nextBtn) nextBtn.disabled = (this.currentIndex === this.slides.length - 1);
     }
 
     /**
@@ -2224,6 +2486,53 @@ body {
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  // ----------------------------------------------------------------
+  // Utilities
+  // ----------------------------------------------------------------
+
+  /**
+   * Returns a debounced version of fn that delays invocation by `delay` ms.
+   */
+  function debounce(fn, delay) {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), delay);
+    };
+  }
+
+  /**
+   * Display a brief notification toast (replaces blocking alert()).
+   * @param {string} message
+   * @param {'error'|'info'|'warning'} type
+   * @param {number} duration  Auto-dismiss in ms; 0 = stay until closed manually.
+   */
+  function showToast(message, type = 'error', duration = 6000) {
+    const container = document.getElementById('toast-container');
+    if (!container) { console.warn('[Toast]', message); return; }
+
+    const icons = { error: '\u26a0\ufe0f', info: '\u2139\ufe0f', warning: '\u26a1' };
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+    toast.innerHTML = `
+      <span class="toast-icon" aria-hidden="true">${icons[type] || '\u2022'}</span>
+      <span class="toast-body">${message}</span>
+      <button class="toast-close" aria-label="Fechar notifica\u00e7\u00e3o">\u00d7</button>
+    `;
+    const closeBtn = toast.querySelector('.toast-close');
+    const dismiss = () => {
+      toast.classList.add('toast-exit');
+      setTimeout(() => toast.remove(), 300);
+    };
+    closeBtn.addEventListener('click', dismiss);
+    container.appendChild(toast);
+    if (duration > 0) setTimeout(dismiss, duration);
+  }
+  // Expose globally so presentation.js and other modules can use it
+  window.showToast = showToast;
+
   // --- DOM References ---
   const landingZone = document.getElementById('landing-zone');
   const dropCard = document.getElementById('drop-card');
@@ -2276,6 +2585,115 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.TOC) window.TOC.init('toc-nav-container');
   if (window.Search) window.Search.init('render-target');
   if (window.Presentation) window.Presentation.init();
+
+  // --- Accessible Drawer Helper ---
+  /**
+   * Creates an accessible drawer (slide-in panel) that:
+   * - Sets aria-expanded on the trigger button
+   * - Injects a semi-transparent backdrop into the DOM
+   * - Moves focus to the first focusable element inside the panel on open
+   * - Traps Tab focus within the panel while open
+   * - Returns focus to the trigger button on close
+   * - Closes on Escape or backdrop click
+   *
+   * @param {Object} opts
+   * @param {HTMLElement} opts.panel     - The drawer/aside element
+   * @param {HTMLElement} opts.trigger   - Button that opens the drawer
+   * @param {HTMLElement} opts.closeBtn  - Button inside the drawer that closes it
+   * @param {string}      opts.openClass - CSS class applied to the panel when open (default 'open')
+   * @returns {{ open, close, isOpen }}
+   */
+  function createDrawer({ panel, trigger, closeBtn, openClass = 'open' }) {
+    let backdrop = null;
+    let previouslyFocused = null;
+
+    const FOCUSABLE = [
+      'a[href]', 'button:not([disabled])', 'input:not([disabled])',
+      'select:not([disabled])', 'textarea:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])'
+    ].join(', ');
+
+    function getFocusable() {
+      return Array.from(panel.querySelectorAll(FOCUSABLE))
+        .filter(el => !el.closest('[hidden]') && getComputedStyle(el).display !== 'none');
+    }
+
+    function trapTab(e) {
+      if (e.key !== 'Tab') return;
+      const focusable = getFocusable();
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last  = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+      }
+    }
+
+    function handleEsc(e) {
+      if (e.key === 'Escape') close();
+    }
+
+    function open() {
+      previouslyFocused = document.activeElement;
+      panel.classList.add(openClass);
+
+      // ARIA state
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+
+      // Inject backdrop
+      backdrop = document.createElement('div');
+      backdrop.className = 'drawer-backdrop';
+      backdrop.setAttribute('aria-hidden', 'true');
+      backdrop.addEventListener('click', close);
+      document.body.appendChild(backdrop);
+
+      // Move focus inside
+      const focusable = getFocusable();
+      if (focusable.length > 0) {
+        // Prefer a close button, otherwise first focusable element
+        const closeEl = panel.querySelector('[id$="-close"], [id$="close-"], .btn-close, .btn-close-presentation');
+        (closeEl || focusable[0]).focus();
+      }
+
+      // Trap focus and listen for Esc
+      panel.addEventListener('keydown', trapTab);
+      document.addEventListener('keydown', handleEsc);
+    }
+
+    function close() {
+      panel.classList.remove(openClass);
+
+      // ARIA state
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+
+      // Remove backdrop
+      if (backdrop) {
+        backdrop.remove();
+        backdrop = null;
+      }
+
+      // Remove listeners
+      panel.removeEventListener('keydown', trapTab);
+      document.removeEventListener('keydown', handleEsc);
+
+      // Return focus
+      if (previouslyFocused && typeof previouslyFocused.focus === 'function') {
+        previouslyFocused.focus();
+      }
+    }
+
+    // Wire the dedicated close button inside the panel
+    if (closeBtn) closeBtn.addEventListener('click', close);
+
+    return {
+      open,
+      close,
+      get isOpen() { return panel.classList.contains(openClass); },
+      toggle() { this.isOpen ? this.close() : this.open(); }
+    };
+  }
 
   // Sync settings panel values with stored Settings values
   if (window.Settings) {
@@ -2351,7 +2769,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Basic format validation
     const name = file.name.toLowerCase();
     if (!name.endsWith('.md') && !name.endsWith('.markdown') && !name.endsWith('.txt')) {
-      alert('Format error: Please select a valid markdown file (.md, .markdown) or plain text (.txt).');
+      showToast('Formato inválido: selecione um arquivo Markdown (.md, .markdown) ou texto simples (.txt).', 'error');
       return;
     }
 
@@ -2378,7 +2796,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(err => {
           console.error(err);
-          alert('Error loading file content: ' + err.message);
+          showToast('Erro ao carregar o arquivo: ' + err.message, 'error');
         });
     }
   }
@@ -2433,35 +2851,34 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- Mobile TOC Binding ---
+  // (handled by tocDrawer below)
+
+  // --- Accessible Drawers ---
+
+  const settingsDrawer = createDrawer({
+    panel:     settingsPanel,
+    trigger:   btnToggleSettings,
+    closeBtn:  btnCloseSettings
+  });
+
+  const tocDrawer = createDrawer({
+    panel:    tocSidebar,
+    trigger:  btnToggleToc,
+    closeBtn: btnCloseToc
+  });
+
+  btnToggleSettings.addEventListener('click', () => settingsDrawer.toggle());
+
   if (btnToggleToc && tocSidebar) {
-    btnToggleToc.addEventListener('click', () => {
-      tocSidebar.classList.toggle('open');
-    });
-  }
+    btnToggleToc.addEventListener('click', () => tocDrawer.toggle());
 
-  if (btnCloseToc && tocSidebar) {
-    btnCloseToc.addEventListener('click', () => {
-      tocSidebar.classList.remove('open');
-    });
-  }
-
-  if (tocSidebar) {
+    // On mobile, close TOC automatically when a heading link is clicked
     tocSidebar.addEventListener('click', (e) => {
       if (e.target.tagName.toLowerCase() === 'a' && window.innerWidth <= 768) {
-        tocSidebar.classList.remove('open');
+        tocDrawer.close();
       }
     });
   }
-
-  // --- Appearance Settings Binding ---
-  
-  btnToggleSettings.addEventListener('click', () => {
-    settingsPanel.classList.toggle('open');
-  });
-
-  btnCloseSettings.addEventListener('click', () => {
-    settingsPanel.classList.remove('open');
-  });
 
   const btnResetSettings = document.getElementById('btn-reset-settings');
   if (btnResetSettings) {
@@ -2536,15 +2953,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Real-time Search Binding ---
-  
+
+  const debouncedSearch = debounce((val) => {
+    if (!window.Search) return;
+    if (val === '') {
+      window.Search.clear();
+    } else {
+      window.Search.search(val);
+    }
+  }, 300);
+
   searchInput.addEventListener('input', (e) => {
-    const val = e.target.value;
-    if (window.Search) {
-      if (val === '') {
-        window.Search.clear();
-      } else {
-        window.Search.search(val);
-      }
+    debouncedSearch(e.target.value);
+  });
+
+  // Enter: scroll to current match without advancing.
+  // Shift+Enter: go to previous match (with scroll).
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' || !window.Search) return;
+    e.preventDefault();
+    if (e.shiftKey) {
+      window.Search.prev();
+    } else if (window.Search.matches.length > 0) {
+      window.Search.scrollToCurrent();
     }
   });
 
@@ -2607,9 +3038,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Escape exits settings drawer
-    if (e.key === 'Escape' && settingsPanel.classList.contains('open')) {
-      settingsPanel.classList.remove('open');
+    // Escape closes whichever drawer is open (focus is returned by each drawer's own handler)
+    if (e.key === 'Escape') {
+      if (settingsDrawer.isOpen) settingsDrawer.close();
+      if (tocDrawer.isOpen)      tocDrawer.close();
     }
   });
 
@@ -2654,7 +3086,7 @@ document.addEventListener('DOMContentLoaded', () => {
           readerLayout.classList.remove('hidden');
           
           displayFileName.textContent = currentFile.name;
-          displayFileSize.textContent = 'Session Restored';
+          displayFileSize.textContent = 'Sessão restaurada';
           
           setTimeout(() => {
             if (sessionData.scroll && readingCanvas) {
@@ -2685,5 +3117,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 </script>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>
 </body>
 </html>
