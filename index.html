@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,11 +19,11 @@
 
   <!-- External CDNs -->
   <!-- marked.js for markdown compiling -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@18.0.4/marked.min.js"></script>
   <!-- KaTeX for formula rendering -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked-katex-extension/lib/index.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked-katex-extension@5.1.10/lib/index.umd.js"></script>
   <!-- DOMPurify to prevent XSS -->
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
   <!-- highlight.js for code syntax highlighting -->
@@ -40,17 +40,17 @@
     <section id="landing-zone" class="landing-zone">
       <div class="drop-card" id="drop-card">
         <div class="drop-icon">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
             <polyline points="14 2 14 8 20 8"/>
             <line x1="12" y1="18" x2="12" y2="12"/>
             <polyline points="9 15 12 12 15 15"/>
           </svg>
         </div>
-        <h2>Load your Markdown Document</h2>
-        <p>Drag & drop your file here, or click to browse</p>
+        <h2>Carregar Documento Markdown</h2>
+        <p>Arraste o arquivo aqui ou clique para selecionar</p>
         <input type="file" id="file-input" accept=".md,.markdown,.txt" class="hidden-input">
-        <button class="btn btn-primary" id="browse-btn">Select File</button>
+        <button class="btn btn-primary" id="browse-btn">Selecionar Arquivo</button>
       </div>
     </section>
 
@@ -59,21 +59,22 @@
       <!-- Top Navbar / Controls -->
       <header class="reader-header">
         <div class="header-left">
-          <button class="btn-icon" id="btn-back-landing" title="Load another file">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn-icon" id="btn-back-landing" title="Load another file" aria-label="Load another file">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
           </button>
-          <button class="btn-icon mobile-only" id="btn-toggle-toc" title="Table of Contents">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn-icon mobile-only" id="btn-toggle-toc" title="Table of Contents"
+            aria-label="Toggle table of contents" aria-expanded="false" aria-controls="toc-sidebar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="3" y1="12" x2="21" y2="12"></line>
               <line x1="3" y1="6" x2="21" y2="6"></line>
               <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
           </button>
           <div class="file-info">
-            <span class="file-name" id="display-file-name">document.md</span>
+            <span class="file-name" id="display-file-name">documento.md</span>
             <span class="file-size" id="display-file-size">0 KB</span>
           </div>
         </div>
@@ -81,26 +82,27 @@
         <div class="header-right">
           <!-- Search Bar -->
           <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search in document..." aria-label="Search">
+            <input type="text" id="search-input" placeholder="Buscar no documento..." aria-label="Buscar">
             <div class="search-controls hidden" id="search-controls">
-              <span class="search-counter" id="search-counter">0 of 0</span>
-              <button class="btn-icon-small" id="search-prev" title="Previous match">▲</button>
-              <button class="btn-icon-small" id="search-next" title="Next match">▼</button>
+              <span class="search-counter" id="search-counter">0 de 0</span>
+              <button class="btn-icon-small" id="search-prev" title="Resultado anterior" aria-label="Resultado anterior">▲</button>
+              <button class="btn-icon-small" id="search-next" title="Próximo resultado" aria-label="Próximo resultado">▼</button>
             </div>
           </div>
 
           <!-- Utility Options -->
-          <button class="btn btn-secondary" id="btn-presentation" title="Presentation Mode">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn btn-secondary" id="btn-presentation" title="Modo de Apresentação" aria-label="Modo de apresentação">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
               <line x1="8" y1="21" x2="16" y2="21"/>
               <line x1="12" y1="17" x2="12" y2="21"/>
             </svg>
-            Slides
+            <span class="slides-label">Slides</span>
           </button>
 
-          <button class="btn-icon" id="btn-toggle-settings" title="Settings">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn-icon" id="btn-toggle-settings" title="Settings"
+            aria-label="Open appearance settings" aria-expanded="false" aria-controls="settings-panel">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="3"/>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
             </svg>
@@ -113,12 +115,12 @@
         <!-- Sidebar Navigation (Table of Contents) -->
         <aside class="toc-sidebar" id="toc-sidebar">
           <div class="toc-header">
-            <h3>Table of Contents</h3>
-            <button class="btn-close mobile-only" id="btn-close-toc">&times;</button>
+            <h3>Índice</h3>
+            <button class="btn-close mobile-only" id="btn-close-toc" aria-label="Fechar índice">&times;</button>
           </div>
           <nav class="toc-nav" id="toc-nav-container">
-            <!-- Dynamically populated links -->
-            <p class="toc-empty">No headings found</p>
+            <!-- Links gerados dinamicamente -->
+            <p class="toc-empty">Sem títulos encontrados</p>
           </nav>
         </aside>
 
@@ -133,20 +135,20 @@
       <!-- Settings Sidebar Panel -->
       <aside class="settings-panel" id="settings-panel">
         <div class="settings-header">
-          <h3>Appearance Settings</h3>
-          <button class="btn-close" id="btn-close-settings">&times;</button>
+          <h3>Configurações de Aparência</h3>
+          <button class="btn-close" id="btn-close-settings" aria-label="Fechar configurações">&times;</button>
         </div>
         
         <div class="settings-group">
-          <label>Theme</label>
+          <label>Tema</label>
           <div class="theme-buttons">
-            <button class="btn-toggle active" data-theme="light">Light</button>
-            <button class="btn-toggle" data-theme="dark">Dark</button>
+            <button class="btn-toggle active" data-theme="light">Claro</button>
+            <button class="btn-toggle" data-theme="dark">Escuro</button>
           </div>
         </div>
 
         <div class="settings-group">
-          <label>Font Family</label>
+          <label>Fonte</label>
           <div class="font-buttons">
             <button class="btn-toggle" data-font="sans">Outfit</button>
             <button class="btn-toggle active" data-font="serif">Libertinus</button>
@@ -156,13 +158,13 @@
         <div class="settings-group">
           <label>Layout</label>
           <div class="layout-buttons">
-            <button class="btn-toggle active" data-layout="single">Single Column</button>
-            <button class="btn-toggle" data-layout="columns">Two Columns</button>
+            <button class="btn-toggle active" data-layout="single">Coluna Única</button>
+            <button class="btn-toggle" data-layout="columns">Duas Colunas</button>
           </div>
         </div>
 
         <div class="settings-group">
-          <label>Font Size</label>
+          <label>Tamanho da Fonte</label>
           <div class="range-control">
             <input type="range" id="setting-font-size" min="14" max="24" value="18">
             <span class="range-val" id="val-font-size">18px</span>
@@ -170,7 +172,7 @@
         </div>
 
         <div class="settings-group">
-          <label>Line Spacing</label>
+          <label>Espaçamento de Linha</label>
           <div class="range-control">
             <input type="range" id="setting-line-height" min="1.4" max="2.0" step="0.1" value="1.6">
             <span class="range-val" id="val-line-height">1.6</span>
@@ -178,7 +180,7 @@
         </div>
 
         <div class="settings-group">
-          <label>Max Layout Width</label>
+          <label>Largura Máxima</label>
           <div class="range-control">
             <input type="range" id="setting-max-width" min="600" max="1400" step="50" value="800">
             <span class="range-val" id="val-max-width">800px</span>
@@ -186,14 +188,14 @@
         </div>
 
         <div class="settings-group border-top">
-          <button class="btn btn-secondary w-full" id="btn-reset-settings" style="color: var(--text-muted); border-color: transparent;">↺ Restore Default Settings</button>
+          <button class="btn btn-secondary w-full" id="btn-reset-settings" style="color: var(--text-muted); border-color: transparent;">↺ Restaurar Padrões</button>
         </div>
 
         <div class="settings-group border-top">
-          <label>Export Options</label>
+          <label>Exportar</label>
           <div class="export-actions">
-            <button class="btn btn-secondary w-full" id="btn-export-html">Export as HTML</button>
-            <button class="btn btn-secondary w-full" id="btn-export-pdf">Print / Export as PDF</button>
+            <button class="btn btn-secondary w-full" id="btn-export-html">Exportar como HTML</button>
+            <button class="btn btn-secondary w-full" id="btn-export-pdf">Imprimir / Exportar PDF</button>
           </div>
         </div>
       </aside>
@@ -203,15 +205,15 @@
     <section id="presentation-mode" class="presentation-mode hidden">
       <header class="presentation-header">
         <span class="slide-title" id="slide-title">Presentation Title</span>
-        <button class="btn-close-presentation" id="btn-close-presentation" title="Exit Presentation Mode">&times;</button>
+        <button class="btn-close-presentation" id="btn-close-presentation" title="Exit Presentation Mode" aria-label="Exit presentation mode">&times;</button>
       </header>
       <div class="slide-container" id="slide-container">
         <!-- Dynamic active slide content -->
       </div>
       <footer class="presentation-footer">
-        <button class="btn-slide-nav" id="slide-prev">◀ Previous</button>
-        <span class="slide-counter" id="slide-counter">1 / 1</span>
-        <button class="btn-slide-nav" id="slide-next">Next ▶</button>
+        <button class="btn-slide-nav" id="slide-prev" aria-label="Slide anterior">◀ Anterior</button>
+        <span class="slide-counter" id="slide-counter" aria-live="polite" aria-atomic="true">1 / 1</span>
+        <button class="btn-slide-nav" id="slide-next" aria-label="Próximo slide">Próximo ▶</button>
       </footer>
     </section>
   </div>
@@ -224,5 +226,8 @@
   <script src="js/export.js"></script>
   <script src="js/presentation.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>
 </body>
 </html>

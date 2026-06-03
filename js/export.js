@@ -4,6 +4,19 @@
  */
 
 (function () {
+  /**
+   * Escape the 5 special HTML characters for safe injection into element
+   * attributes and text contexts (e.g. <title>).
+   */
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
   class DocumentExport {
     
     /**
@@ -12,8 +25,39 @@
     exportToHTML(contentElement, fileName = 'document.html') {
       if (!contentElement) return;
 
-      const htmlContent = contentElement.innerHTML;
-      const documentTitle = document.title || 'Rendered Document';
+      // --- 1. Build a clean DOM clone, stripping interactive artifacts ---
+      // Copy buttons, active search highlights, and other post-processing
+      // elements are ephemeral UI — they should not appear in a static export.
+      const clone = contentElement.cloneNode(true);
+      clone.querySelectorAll('.btn-copy-code, .code-block-header, .search-highlight, .search-current')
+        .forEach(el => {
+          // Unwrap search-highlight spans, restoring their inner text
+          if (el.classList.contains('search-highlight') || el.classList.contains('search-current')) {
+            el.replaceWith(document.createTextNode(el.textContent));
+          } else {
+            el.remove();
+          }
+        });
+
+      // --- 2. Re-sanitize the cloned content with a conservative static profile ---
+      // Even though the render target was already sanitized, the export creates
+      // a new browsing context, so we sanitize again without iframe/embed support.
+      let htmlContent;
+      if (typeof DOMPurify !== 'undefined') {
+        htmlContent = DOMPurify.sanitize(clone.innerHTML, {
+          USE_PROFILES: { html: true, mathMl: true },
+          // No ADD_TAGS: the export is a static snapshot — no iframes allowed
+          FORBID_TAGS: ['iframe', 'embed', 'object', 'form', 'input', 'button', 'script'],
+          FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur']
+        });
+      } else {
+        // DOMPurify unavailable — fall back to the raw clone and warn
+        console.warn('export.js: DOMPurify not available; exporting raw innerHTML.');
+        htmlContent = clone.innerHTML;
+      }
+
+      // --- 3. Escape the document title for safe injection into <title> ---
+      const documentTitle = escapeHtml(document.title || 'Rendered Document');
 
       // Create a clean standalone HTML template including styling
       const fullHtml = `<!DOCTYPE html>

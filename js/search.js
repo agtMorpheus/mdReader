@@ -56,7 +56,8 @@
       
       if (this.matches.length > 0) {
         this.currentIndex = 0;
-        this.highlightCurrent();
+        // Don't scroll on every keystroke — only on Enter / prev / next
+        this.highlightCurrent(false);
       }
 
       this.updateUI();
@@ -72,11 +73,17 @@
         
         if (index !== -1) {
           const parent = node.parentNode;
-          // Skip if parent is inside pre/code or table tags if preferred,
-          // but specs say: "visually marks matching terms inside the rendered content"
-          // Skip if parent is already a highlight
-          if (parent && (parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE' || parent.classList.contains('search-highlight'))) {
-            return;
+          // Skip if parent is a tag or class that should be ignored to prevent breaking layout/code/formulas/diagrams
+          if (parent) {
+            const tagName = parent.tagName.toUpperCase();
+            if (
+              ['SCRIPT', 'STYLE', 'PRE', 'CODE', 'SVG', 'MATH'].includes(tagName) ||
+              parent.classList.contains('katex') ||
+              parent.classList.contains('mermaid') ||
+              parent.classList.contains('search-highlight')
+            ) {
+              return;
+            }
           }
 
           // Split text node around match
@@ -100,9 +107,22 @@
             this.highlightMatches(remainingTextNode);
           }
 
-          parent.replaceChild(fragment, node);
+          if (parent) {
+            parent.replaceChild(fragment, node);
+          }
         }
       } else if (node.nodeType === Node.ELEMENT_NODE && node.hasChildNodes()) {
+        const tagName = node.tagName.toUpperCase();
+        // Skip traversing children of ignored tags or classes
+        if (
+          ['SCRIPT', 'STYLE', 'PRE', 'CODE', 'SVG', 'MATH'].includes(tagName) ||
+          node.classList.contains('katex') ||
+          node.classList.contains('mermaid') ||
+          node.classList.contains('search-highlight')
+        ) {
+          return;
+        }
+
         // Create an array of children to prevent live nodeList mutation issues during replacement
         const children = Array.from(node.childNodes);
         children.forEach(child => this.highlightMatches(child));
@@ -110,14 +130,25 @@
     }
 
     /**
-     * Highlights the current search result
+     * Scroll the active match into view without changing index
      */
-    highlightCurrent() {
+    scrollToCurrent() {
+      if (this.matches.length === 0 || this.currentIndex < 0) return;
+      const el = this.matches[this.currentIndex];
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    /**
+     * Highlights the current search result.
+     * @param {boolean} shouldScroll  Scroll the match into view (default true).
+     */
+    highlightCurrent(shouldScroll = true) {
       this.matches.forEach((el, idx) => {
         if (idx === this.currentIndex) {
           el.classList.add('search-current');
-          // Scroll target match into view
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          if (shouldScroll) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         } else {
           el.classList.remove('search-current');
         }
@@ -158,9 +189,9 @@
       } else {
         controls.classList.remove('hidden');
         if (this.matches.length === 0) {
-          counter.textContent = '0 of 0';
+          counter.textContent = '0 de 0';
         } else {
-          counter.textContent = `${this.currentIndex + 1} of ${this.matches.length}`;
+          counter.textContent = `${this.currentIndex + 1} de ${this.matches.length}`;
         }
       }
     }

@@ -5,6 +5,53 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  // ----------------------------------------------------------------
+  // Utilities
+  // ----------------------------------------------------------------
+
+  /**
+   * Returns a debounced version of fn that delays invocation by `delay` ms.
+   */
+  function debounce(fn, delay) {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), delay);
+    };
+  }
+
+  /**
+   * Display a brief notification toast (replaces blocking alert()).
+   * @param {string} message
+   * @param {'error'|'info'|'warning'} type
+   * @param {number} duration  Auto-dismiss in ms; 0 = stay until closed manually.
+   */
+  function showToast(message, type = 'error', duration = 6000) {
+    const container = document.getElementById('toast-container');
+    if (!container) { console.warn('[Toast]', message); return; }
+
+    const icons = { error: '\u26a0\ufe0f', info: '\u2139\ufe0f', warning: '\u26a1' };
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+    toast.innerHTML = `
+      <span class="toast-icon" aria-hidden="true">${icons[type] || '\u2022'}</span>
+      <span class="toast-body">${message}</span>
+      <button class="toast-close" aria-label="Fechar notifica\u00e7\u00e3o">\u00d7</button>
+    `;
+    const closeBtn = toast.querySelector('.toast-close');
+    const dismiss = () => {
+      toast.classList.add('toast-exit');
+      setTimeout(() => toast.remove(), 300);
+    };
+    closeBtn.addEventListener('click', dismiss);
+    container.appendChild(toast);
+    if (duration > 0) setTimeout(dismiss, duration);
+  }
+  // Expose globally so presentation.js and other modules can use it
+  window.showToast = showToast;
+
   // --- DOM References ---
   const landingZone = document.getElementById('landing-zone');
   const dropCard = document.getElementById('drop-card');
@@ -57,6 +104,115 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.TOC) window.TOC.init('toc-nav-container');
   if (window.Search) window.Search.init('render-target');
   if (window.Presentation) window.Presentation.init();
+
+  // --- Accessible Drawer Helper ---
+  /**
+   * Creates an accessible drawer (slide-in panel) that:
+   * - Sets aria-expanded on the trigger button
+   * - Injects a semi-transparent backdrop into the DOM
+   * - Moves focus to the first focusable element inside the panel on open
+   * - Traps Tab focus within the panel while open
+   * - Returns focus to the trigger button on close
+   * - Closes on Escape or backdrop click
+   *
+   * @param {Object} opts
+   * @param {HTMLElement} opts.panel     - The drawer/aside element
+   * @param {HTMLElement} opts.trigger   - Button that opens the drawer
+   * @param {HTMLElement} opts.closeBtn  - Button inside the drawer that closes it
+   * @param {string}      opts.openClass - CSS class applied to the panel when open (default 'open')
+   * @returns {{ open, close, isOpen }}
+   */
+  function createDrawer({ panel, trigger, closeBtn, openClass = 'open' }) {
+    let backdrop = null;
+    let previouslyFocused = null;
+
+    const FOCUSABLE = [
+      'a[href]', 'button:not([disabled])', 'input:not([disabled])',
+      'select:not([disabled])', 'textarea:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])'
+    ].join(', ');
+
+    function getFocusable() {
+      return Array.from(panel.querySelectorAll(FOCUSABLE))
+        .filter(el => !el.closest('[hidden]') && getComputedStyle(el).display !== 'none');
+    }
+
+    function trapTab(e) {
+      if (e.key !== 'Tab') return;
+      const focusable = getFocusable();
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last  = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+      }
+    }
+
+    function handleEsc(e) {
+      if (e.key === 'Escape') close();
+    }
+
+    function open() {
+      previouslyFocused = document.activeElement;
+      panel.classList.add(openClass);
+
+      // ARIA state
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+
+      // Inject backdrop
+      backdrop = document.createElement('div');
+      backdrop.className = 'drawer-backdrop';
+      backdrop.setAttribute('aria-hidden', 'true');
+      backdrop.addEventListener('click', close);
+      document.body.appendChild(backdrop);
+
+      // Move focus inside
+      const focusable = getFocusable();
+      if (focusable.length > 0) {
+        // Prefer a close button, otherwise first focusable element
+        const closeEl = panel.querySelector('[id$="-close"], [id$="close-"], .btn-close, .btn-close-presentation');
+        (closeEl || focusable[0]).focus();
+      }
+
+      // Trap focus and listen for Esc
+      panel.addEventListener('keydown', trapTab);
+      document.addEventListener('keydown', handleEsc);
+    }
+
+    function close() {
+      panel.classList.remove(openClass);
+
+      // ARIA state
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+
+      // Remove backdrop
+      if (backdrop) {
+        backdrop.remove();
+        backdrop = null;
+      }
+
+      // Remove listeners
+      panel.removeEventListener('keydown', trapTab);
+      document.removeEventListener('keydown', handleEsc);
+
+      // Return focus
+      if (previouslyFocused && typeof previouslyFocused.focus === 'function') {
+        previouslyFocused.focus();
+      }
+    }
+
+    // Wire the dedicated close button inside the panel
+    if (closeBtn) closeBtn.addEventListener('click', close);
+
+    return {
+      open,
+      close,
+      get isOpen() { return panel.classList.contains(openClass); },
+      toggle() { this.isOpen ? this.close() : this.open(); }
+    };
+  }
 
   // Sync settings panel values with stored Settings values
   if (window.Settings) {
@@ -132,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Basic format validation
     const name = file.name.toLowerCase();
     if (!name.endsWith('.md') && !name.endsWith('.markdown') && !name.endsWith('.txt')) {
-      alert('Format error: Please select a valid markdown file (.md, .markdown) or plain text (.txt).');
+      showToast('Formato inválido: selecione um arquivo Markdown (.md, .markdown) ou texto simples (.txt).', 'error');
       return;
     }
 
@@ -159,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(err => {
           console.error(err);
-          alert('Error loading file content: ' + err.message);
+          showToast('Erro ao carregar o arquivo: ' + err.message, 'error');
         });
     }
   }
@@ -214,35 +370,34 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- Mobile TOC Binding ---
+  // (handled by tocDrawer below)
+
+  // --- Accessible Drawers ---
+
+  const settingsDrawer = createDrawer({
+    panel:     settingsPanel,
+    trigger:   btnToggleSettings,
+    closeBtn:  btnCloseSettings
+  });
+
+  const tocDrawer = createDrawer({
+    panel:    tocSidebar,
+    trigger:  btnToggleToc,
+    closeBtn: btnCloseToc
+  });
+
+  btnToggleSettings.addEventListener('click', () => settingsDrawer.toggle());
+
   if (btnToggleToc && tocSidebar) {
-    btnToggleToc.addEventListener('click', () => {
-      tocSidebar.classList.toggle('open');
-    });
-  }
+    btnToggleToc.addEventListener('click', () => tocDrawer.toggle());
 
-  if (btnCloseToc && tocSidebar) {
-    btnCloseToc.addEventListener('click', () => {
-      tocSidebar.classList.remove('open');
-    });
-  }
-
-  if (tocSidebar) {
+    // On mobile, close TOC automatically when a heading link is clicked
     tocSidebar.addEventListener('click', (e) => {
       if (e.target.tagName.toLowerCase() === 'a' && window.innerWidth <= 768) {
-        tocSidebar.classList.remove('open');
+        tocDrawer.close();
       }
     });
   }
-
-  // --- Appearance Settings Binding ---
-  
-  btnToggleSettings.addEventListener('click', () => {
-    settingsPanel.classList.toggle('open');
-  });
-
-  btnCloseSettings.addEventListener('click', () => {
-    settingsPanel.classList.remove('open');
-  });
 
   const btnResetSettings = document.getElementById('btn-reset-settings');
   if (btnResetSettings) {
@@ -317,15 +472,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Real-time Search Binding ---
-  
+
+  const debouncedSearch = debounce((val) => {
+    if (!window.Search) return;
+    if (val === '') {
+      window.Search.clear();
+    } else {
+      window.Search.search(val);
+    }
+  }, 300);
+
   searchInput.addEventListener('input', (e) => {
-    const val = e.target.value;
-    if (window.Search) {
-      if (val === '') {
-        window.Search.clear();
-      } else {
-        window.Search.search(val);
-      }
+    debouncedSearch(e.target.value);
+  });
+
+  // Enter: scroll to current match without advancing.
+  // Shift+Enter: go to previous match (with scroll).
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' || !window.Search) return;
+    e.preventDefault();
+    if (e.shiftKey) {
+      window.Search.prev();
+    } else if (window.Search.matches.length > 0) {
+      window.Search.scrollToCurrent();
     }
   });
 
@@ -388,9 +557,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Escape exits settings drawer
-    if (e.key === 'Escape' && settingsPanel.classList.contains('open')) {
-      settingsPanel.classList.remove('open');
+    // Escape closes whichever drawer is open (focus is returned by each drawer's own handler)
+    if (e.key === 'Escape') {
+      if (settingsDrawer.isOpen) settingsDrawer.close();
+      if (tocDrawer.isOpen)      tocDrawer.close();
     }
   });
 
@@ -435,7 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
           readerLayout.classList.remove('hidden');
           
           displayFileName.textContent = currentFile.name;
-          displayFileSize.textContent = 'Session Restored';
+          displayFileSize.textContent = 'Sessão restaurada';
           
           setTimeout(() => {
             if (sessionData.scroll && readingCanvas) {

@@ -8,6 +8,7 @@
   class MarkdownParser {
     constructor() {
       this.initMarked();
+      this.setupDOMPurifyHooks();
     }
 
     /**
@@ -17,9 +18,7 @@
       if (typeof marked !== 'undefined') {
         marked.setOptions({
           gfm: true,
-          breaks: true,
-          headerIds: true,
-          mangle: false
+          breaks: true
         });
         
         // Add KaTeX extension if available
@@ -35,6 +34,44 @@
     }
 
     /**
+     * Set up security hooks for DOMPurify
+     */
+    setupDOMPurifyHooks() {
+      if (typeof DOMPurify !== 'undefined' && !DOMPurify.hasSecurityHook) {
+        DOMPurify.addHook('uponSanitizeElement', (node, data) => {
+          if (data.tagName === 'iframe') {
+            const src = node.getAttribute('src') || '';
+            
+            // Allowlist for iframe sources (YouTube, Vimeo, Google Maps)
+            const isAllowedUrl = /^(https:\/\/www\.youtube\.com\/embed\/|https:\/\/www\.youtube-nocookie\.com\/embed\/|https:\/\/player\.vimeo\.com\/video\/|https:\/\/www\.google\.com\/maps\/embed)/.test(src);
+            
+            if (!isAllowedUrl) {
+              if (node.parentNode) {
+                node.parentNode.removeChild(node);
+              } else {
+                node.setAttribute('src', 'about:blank');
+              }
+              return;
+            }
+            
+            // Enforce strict sandboxing without allow-same-origin to prevent breakouts
+            node.setAttribute('sandbox', 'allow-scripts allow-popups allow-forms allow-presentation');
+            
+            // Allow list of safe attributes
+            const allowedAttributes = ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'sandbox', 'title', 'class', 'id', 'style'];
+            const attrs = Array.from(node.attributes);
+            for (const attr of attrs) {
+              if (!allowedAttributes.includes(attr.name.toLowerCase())) {
+                node.removeAttribute(attr.name);
+              }
+            }
+          }
+        });
+        DOMPurify.hasSecurityHook = true;
+      }
+    }
+
+    /**
      * Parses raw Markdown string into sanitized HTML
      */
     parse(markdownText) {
@@ -43,16 +80,22 @@
       // Compile Markdown
       const rawHtml = marked.parse(markdownText);
 
+      // Make sure hooks are set up
+      this.setupDOMPurifyHooks();
+
       // Sanitize compiled HTML using DOMPurify
       if (typeof DOMPurify !== 'undefined') {
         return DOMPurify.sanitize(rawHtml, {
-          ADD_TAGS: ['iframe', 'embed'], // Allow safe embeddings if needed
+          ADD_TAGS: ['iframe'], // Allow only iframe, removing embed entirely
+          ADD_ATTR: ['sandbox', 'allow', 'allowfullscreen', 'frameborder'],
           USE_PROFILES: { html: true, mathMl: true }
         });
       }
 
-      console.warn('DOMPurify not loaded. Output might be vulnerable to XSS.');
-      return rawHtml;
+      console.warn('DOMPurify not loaded. Rendering blocked to prevent XSS.');
+      return `<div style="padding: 20px; border: 1px solid #ffcccb; background-color: #fff6f6; color: #d8000c; border-radius: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 20px 0; line-height: 1.5;">
+        <strong style="font-size: 1.1em;">Security Alert:</strong> The sanitization module (DOMPurify) is not loaded. Rendering has been halted to prevent potential script execution (XSS). Please check your connection or reload the page.
+      </div>`;
     }
 
     /**
@@ -123,6 +166,16 @@
 
       // 2. Process Mermaid Diagrams
       this.renderMermaid();
+
+      // 3. Wrap tables for horizontal scrolling on narrow screens
+      element.querySelectorAll('table').forEach(table => {
+        if (!table.parentElement.classList.contains('table-wrapper')) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'table-wrapper';
+          table.parentNode.insertBefore(wrapper, table);
+          wrapper.appendChild(table);
+        }
+      });
     }
 
     /**

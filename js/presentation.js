@@ -61,7 +61,12 @@
      */
     start() {
       if (this.slides.length === 0) {
-        alert('No slides content parsed from document.');
+        if (typeof window.showToast === 'function') {
+          window.showToast('Nenhum slide encontrado. Use `---` para separar slides no documento.', 'info');
+        } else {
+          // fallback before app.js is fully loaded
+          console.warn('Presentation: no slides parsed from document.');
+        }
         return;
       }
 
@@ -116,6 +121,12 @@
       if (this.title) {
         this.title.textContent = this.documentTitle;
       }
+
+      // Update nav button disabled state
+      const prevBtn = document.getElementById('slide-prev');
+      const nextBtn = document.getElementById('slide-next');
+      if (prevBtn) prevBtn.disabled = (this.currentIndex === 0);
+      if (nextBtn) nextBtn.disabled = (this.currentIndex === this.slides.length - 1);
     }
 
     /**
