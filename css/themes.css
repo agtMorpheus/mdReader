@@ -1,0 +1,60 @@
+/* CSS Theme Variables */
+
+:root {
+  /* Common Transition */
+  --theme-transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Light Theme Variables */
+.theme-light {
+  --bg-app: hsl(210, 20%, 98%);
+  --bg-card: hsl(0, 0%, 100%);
+  --bg-sidebar: hsl(210, 20%, 96%);
+  --border-color: hsl(214, 16%, 90%);
+  
+  --text-main: hsl(215, 25%, 15%);
+  --text-muted: hsl(215, 16%, 47%);
+  --text-inverse: hsl(0, 0%, 100%);
+  
+  --primary: hsl(255, 60%, 55%);
+  --primary-hover: hsl(255, 60%, 48%);
+  --primary-light: hsl(255, 60%, 94%);
+  
+  --accent: hsl(190, 70%, 45%);
+  --accent-light: hsl(190, 70%, 95%);
+  
+  --search-match: hsl(45, 100%, 75%);
+  --search-current: hsl(35, 100%, 65%);
+  
+  --code-bg: hsl(220, 14%, 96%);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+}
+
+/* Dark Theme Variables */
+.theme-dark {
+  --bg-app: hsl(220, 25%, 10%);
+  --bg-card: hsl(220, 25%, 13%);
+  --bg-sidebar: hsl(220, 25%, 8%);
+  --border-color: hsl(220, 20%, 20%);
+  
+  --text-main: hsl(210, 20%, 90%);
+  --text-muted: hsl(215, 12%, 60%);
+  --text-inverse: hsl(220, 25%, 10%);
+  
+  --primary: hsl(255, 75%, 70%);
+  --primary-hover: hsl(255, 75%, 76%);
+  --primary-light: hsl(255, 30%, 20%);
+  
+  --accent: hsl(190, 80%, 65%);
+  --accent-light: hsl(190, 40%, 20%);
+  
+  --search-match: hsl(45, 80%, 30%);
+  --search-current: hsl(35, 90%, 40%);
+  
+  --code-bg: hsl(220, 20%, 16%);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}

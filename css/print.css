@@ -1,0 +1,76 @@
+/* Print Stylesheet for mdReader */
+
+@media print {
+  /* Reset page styling and colors for clean ink printing */
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    font-family: 'Libertinus Serif', serif !important;
+    font-size: 12pt !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Hide interface elements */
+  .landing-zone,
+  .reader-header,
+  .toc-sidebar,
+  .settings-panel,
+  .presentation-mode,
+  .code-block-header,
+  .btn-copy-code {
+    display: none !important;
+  }
+
+  /* Expand reading environment to fill printable width */
+  .app-container,
+  .reader-layout,
+  .content-wrapper,
+  .reading-canvas {
+    display: block !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    height: auto !important;
+  }
+
+  .markdown-body {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Page breaks optimization */
+  h1, h2, h3 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  p, pre, code, blockquote, table, img {
+    page-break-inside: avoid;
+  }
+
+  /* Code Blocks customization for print */
+  pre code {
+    border: 1px solid #ccc !important;
+    background: #fafafa !important;
+    color: #000 !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+
+  /* Display anchor target link text after link text for transparency */
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+    font-size: 90%;
+    color: #666;
+  }
+}

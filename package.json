@@ -1,0 +1,14 @@
+{
+  "name": "mdreader",
+  "version": "1.0.0",
+  "description": "A client-side Markdown Reader running entirely in the browser",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "marked": "^18.0.4",
+    "marked-katex-extension": "^5.1.10"
+  }
+}
