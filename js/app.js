@@ -244,6 +244,24 @@ document.addEventListener('DOMContentLoaded', () => {
     settingsPanel.classList.remove('open');
   });
 
+  const btnResetSettings = document.getElementById('btn-reset-settings');
+  if (btnResetSettings) {
+    btnResetSettings.addEventListener('click', () => {
+      if (window.Settings) {
+        window.Settings.reset();
+        
+        // Sync UI back
+        const s = window.Settings.settings;
+        themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === s.theme));
+        fontBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.font === s.font));
+        if (layoutBtns) layoutBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.layout === s.layout));
+        if (fontSizeRange) fontSizeRange.value = s.fontSize;
+        if (lineHeightRange) lineHeightRange.value = s.lineHeight;
+        if (maxWidthRange) maxWidthRange.value = s.maxWidth;
+      }
+    });
+  }
+
   // Theme Switches
   themeBtns.forEach(btn => {
     btn.addEventListener('click', () => {

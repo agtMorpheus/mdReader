@@ -62,14 +62,35 @@
     }
 
     /**
+     * Restore all defaults
+     */
+    reset() {
+      this.settings = { ...defaultSettings };
+      this.save();
+      this.applyAll();
+    }
+
+    /**
      * Apply all settings to the DOM
      */
     applyAll() {
       this.applyTheme(this.settings.theme);
       this.applyFont(this.settings.font);
+      this.applyLayout(this.settings.layout);
       this.applyFontSize(this.settings.fontSize);
       this.applyLineHeight(this.settings.lineHeight);
       this.applyMaxWidth(this.settings.maxWidth);
+    }
+
+    /**
+     * Layout Toggle (Single / Columns)
+     */
+    applyLayout(layout) {
+      this.settings.layout = layout;
+      const target = document.getElementById('render-target');
+      if (target) {
+        target.classList.toggle('layout-two-columns', layout === 'columns');
+      }
     }
 
     /**
@@ -157,6 +178,7 @@
         switch (key) {
           case 'theme': this.applyTheme(value); break;
           case 'font': this.applyFont(value); break;
+          case 'layout': this.applyLayout(value); break;
           case 'fontSize': this.applyFontSize(value); break;
           case 'lineHeight': this.applyLineHeight(value); break;
           case 'maxWidth': this.applyMaxWidth(value); break;

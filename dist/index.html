@@ -515,6 +515,32 @@ body {
   border: 1px solid var(--border-color);
 }
 
+/* Two Column Layout */
+@media (min-width: 1024px) {
+  .markdown-body.layout-two-columns {
+    column-count: 2;
+    column-gap: 4rem;
+    column-rule: 1px solid var(--border-color);
+  }
+  
+  .markdown-body.layout-two-columns > h1,
+  .markdown-body.layout-two-columns > h2,
+  .markdown-body.layout-two-columns > hr {
+    column-span: all;
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .markdown-body.layout-two-columns pre,
+  .markdown-body.layout-two-columns img,
+  .markdown-body.layout-two-columns table,
+  .markdown-body.layout-two-columns .katex-display,
+  .markdown-body.layout-two-columns blockquote {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
 /* Code block wrapper (Header with tag and copy button) */
 .code-block-header {
   display: flex;
@@ -668,7 +694,7 @@ body {
 }
 
 /* Settings Toggle Buttons */
-.theme-buttons, .font-buttons {
+.theme-buttons, .font-buttons, .layout-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
@@ -1071,6 +1097,14 @@ body {
         </div>
 
         <div class="settings-group">
+          <label>Layout</label>
+          <div class="layout-buttons">
+            <button class="btn-toggle active" data-layout="single">Single Column</button>
+            <button class="btn-toggle" data-layout="columns">Two Columns</button>
+          </div>
+        </div>
+
+        <div class="settings-group">
           <label>Font Size</label>
           <div class="range-control">
             <input type="range" id="setting-font-size" min="14" max="24" value="18">
@@ -1089,9 +1123,13 @@ body {
         <div class="settings-group">
           <label>Max Layout Width</label>
           <div class="range-control">
-            <input type="range" id="setting-max-width" min="600" max="1000" step="50" value="800">
+            <input type="range" id="setting-max-width" min="600" max="1400" step="50" value="800">
             <span class="range-val" id="val-max-width">800px</span>
           </div>
+        </div>
+
+        <div class="settings-group border-top">
+          <button class="btn btn-secondary w-full" id="btn-reset-settings" style="color: var(--text-muted); border-color: transparent;">↺ Restore Default Settings</button>
         </div>
 
         <div class="settings-group border-top">
@@ -1136,6 +1174,7 @@ body {
   const defaultSettings = {
     theme: 'light',
     font: 'serif',
+    layout: 'single',
     fontSize: 18,
     lineHeight: 1.6,
     maxWidth: 800
@@ -1187,14 +1226,35 @@ body {
     }
 
     /**
+     * Restore all defaults
+     */
+    reset() {
+      this.settings = { ...defaultSettings };
+      this.save();
+      this.applyAll();
+    }
+
+    /**
      * Apply all settings to the DOM
      */
     applyAll() {
       this.applyTheme(this.settings.theme);
       this.applyFont(this.settings.font);
+      this.applyLayout(this.settings.layout);
       this.applyFontSize(this.settings.fontSize);
       this.applyLineHeight(this.settings.lineHeight);
       this.applyMaxWidth(this.settings.maxWidth);
+    }
+
+    /**
+     * Layout Toggle (Single / Columns)
+     */
+    applyLayout(layout) {
+      this.settings.layout = layout;
+      const target = document.getElementById('render-target');
+      if (target) {
+        target.classList.toggle('layout-two-columns', layout === 'columns');
+      }
     }
 
     /**
@@ -1282,6 +1342,7 @@ body {
         switch (key) {
           case 'theme': this.applyTheme(value); break;
           case 'font': this.applyFont(value); break;
+          case 'layout': this.applyLayout(value); break;
           case 'fontSize': this.applyFontSize(value); break;
           case 'lineHeight': this.applyLineHeight(value); break;
           case 'maxWidth': this.applyMaxWidth(value); break;
@@ -2136,6 +2197,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Settings Controls
   const themeBtns = document.querySelectorAll('[data-theme]');
   const fontBtns = document.querySelectorAll('[data-font]');
+  const layoutBtns = document.querySelectorAll('[data-layout]');
   const fontSizeRange = document.getElementById('setting-font-size');
   const lineHeightRange = document.getElementById('setting-line-height');
   const maxWidthRange = document.getElementById('setting-max-width');
@@ -2165,6 +2227,12 @@ document.addEventListener('DOMContentLoaded', () => {
     fontBtns.forEach(btn => {
       btn.classList.toggle('active', btn.dataset.font === s.font);
     });
+    // Layout
+    if (layoutBtns) {
+      layoutBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.layout === s.layout);
+      });
+    }
     // Range Sliders
     if (fontSizeRange) fontSizeRange.value = s.fontSize;
     if (lineHeightRange) lineHeightRange.value = s.lineHeight;
@@ -2333,6 +2401,24 @@ document.addEventListener('DOMContentLoaded', () => {
     settingsPanel.classList.remove('open');
   });
 
+  const btnResetSettings = document.getElementById('btn-reset-settings');
+  if (btnResetSettings) {
+    btnResetSettings.addEventListener('click', () => {
+      if (window.Settings) {
+        window.Settings.reset();
+        
+        // Sync UI back
+        const s = window.Settings.settings;
+        themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === s.theme));
+        fontBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.font === s.font));
+        if (layoutBtns) layoutBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.layout === s.layout));
+        if (fontSizeRange) fontSizeRange.value = s.fontSize;
+        if (lineHeightRange) lineHeightRange.value = s.lineHeight;
+        if (maxWidthRange) maxWidthRange.value = s.maxWidth;
+      }
+    });
+  }
+
   // Theme Switches
   themeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -2354,6 +2440,19 @@ document.addEventListener('DOMContentLoaded', () => {
       fontBtns.forEach(b => b.classList.toggle('active', b === btn));
     });
   });
+
+  // Layout Switches
+  if (layoutBtns) {
+    layoutBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const layout = btn.dataset.layout;
+        if (window.Settings) {
+          window.Settings.set('layout', layout);
+        }
+        layoutBtns.forEach(b => b.classList.toggle('active', b === btn));
+      });
+    });
+  }
 
   // Range Slider Adjustments
   if (fontSizeRange) {
