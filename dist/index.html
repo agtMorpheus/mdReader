@@ -3129,7 +3129,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Zen Mode Shortcut: Z
-    if ((e.key === 'z' || e.key === 'Z') && document.activeElement.tagName !== 'INPUT' && !window.Presentation?.isActive) {
+    const isEditable = document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.isContentEditable;
+    if ((e.key === 'z' || e.key === 'Z') && !isEditable && !window.Presentation?.isActive) {
       e.preventDefault();
       const isZen = readerLayout.classList.toggle('zen-mode-active');
       if (isZen) {
