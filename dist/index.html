@@ -473,7 +473,7 @@ body {
     display: none;
   }
   .reading-canvas {
-    padding: 1.5rem 1rem;
+    padding: 0 1rem 1.5rem 1rem;
   }
   .settings-panel {
     width: 100%;
@@ -484,10 +484,19 @@ body {
   }
   .markdown-body {
     font-size: 16px;
+    margin-top: 1.5rem;
   }
   .markdown-body h1 { font-size: 1.8rem; }
   .markdown-body h2 { font-size: 1.5rem; }
   .markdown-body h3 { font-size: 1.25rem; }
+
+  .font-buttons {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .range-control {
+    gap: 0.5rem;
+  }
 }
 
 .toc-header {
@@ -552,7 +561,7 @@ body {
 .reading-canvas {
   flex: 1;
   overflow-y: auto;
-  padding: 3rem 2rem;
+  padding: 0 2rem 3rem 2rem;
   scroll-behavior: smooth;
   position: relative;
 }
@@ -590,7 +599,7 @@ body {
 
 /* Markdown Rendering Customizations */
 .markdown-body {
-  margin: 0 auto;
+  margin: 3rem auto 0 auto;
   max-width: 800px;
   line-height: 1.6;
   font-size: 18px;
@@ -1803,7 +1812,7 @@ body {
             theme: document.body.classList.contains('theme-dark') ? 'dark' : 'default'
           });
 
-          const mermaidBlocks = document.querySelectorAll('.mermaid');
+          const mermaidBlocks = document.querySelectorAll('.mermaid:not([data-mermaid-rendered="true"])');
 
           if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver((entries, obs) => {
@@ -2854,12 +2863,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function calculateReadingTime(text) {
-    if (!text || typeof text !== 'string') return 0;
     const wordsPerMinute = 225;
-    const trimmed = text.trim();
-    if (!trimmed) return 0;
-    const words = trimmed.split(/\s+/).length;
-    return Math.ceil(words / wordsPerMinute);
+    const words = text.trim().split(/\s+/).length;
+    const time = Math.ceil(words / wordsPerMinute);
+    return time;
   }
 
   /**
@@ -3179,12 +3186,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Scroll Fade logic
       const scrollDelta = currentScrollTop - lastScrollTop;
-      lastScrollTop = currentScrollTop;
-
       if (scrollDelta > 0 && currentScrollTop > 30) {
-        document.body.classList.add('scroll-fade-active');
+        // Scrolling down
+        if (scrollDelta > 30 || document.body.classList.contains('scroll-fade-active')) {
+           document.body.classList.add('scroll-fade-active');
+        }
       } else if (scrollDelta < 0) {
-        document.body.classList.remove('scroll-fade-active');
+        // Scrolling up
+        if (Math.abs(scrollDelta) > 30 || !document.body.classList.contains('scroll-fade-active')) {
+          document.body.classList.remove('scroll-fade-active');
+        }
+      }
+
+      // Update lastScrollTop if scroll amount was large enough to change state, or just tracking continuously
+      if (Math.abs(scrollDelta) > 30) {
+        lastScrollTop = currentScrollTop;
       }
 
       clearTimeout(scrollTimeout);
