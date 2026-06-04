@@ -474,7 +474,7 @@ body {
 }
 
 #reading-progress {
-  position: absolute;
+  position: sticky;
   top: 0;
   left: 0;
   height: 2px;
