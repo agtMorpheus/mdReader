@@ -1,0 +1,270 @@
+/* Main Stylesheet for mdReader - Base, Reset, Typography, Utility & Buttons */
+
+/* Basic Reset & Base Styling */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  transition: var(--theme-transition);
+  overflow-x: hidden;
+  height: 100vh;
+}
+
+/* Typography Fonts */
+.font-sans {
+  font-family: 'Outfit', sans-serif;
+}
+.font-serif {
+  font-family: 'Libertinus Serif', serif;
+}
+.font-swiss {
+  font-family: 'Inter', sans-serif;
+}
+.font-dyslexic {
+  font-family: 'OpenDyslexic', sans-serif;
+}
+
+/* Hide helper class */
+.hidden {
+  display: none !important;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-sidebar);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ============================================================
+   Focus Visible — keyboard navigation ring
+   Using :focus-visible so mouse users are never shown the ring
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Remove browser default outline — replaced above */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Specific overrides where border-radius / shape needs matching */
+.btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+  border-radius: 0.5rem;
+}
+
+.btn-icon:focus-visible {
+  border-radius: 50%;
+}
+
+.btn-icon-small:focus-visible {
+  border-radius: 4px;
+}
+
+.btn-toggle:focus-visible {
+  border-radius: 0.35rem;
+}
+
+.btn-copy-code:focus-visible {
+  border-radius: 4px;
+}
+
+.btn-close:focus-visible,
+.btn-close-presentation:focus-visible {
+  border-radius: 4px;
+}
+
+.btn-slide-nav:focus-visible {
+  border-radius: 0.5rem;
+}
+
+.toc-link:focus-visible {
+  border-radius: 4px;
+}
+
+/* Search input lives inside the container — show ring on the container */
+.search-container:focus-within {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.search-container input:focus-visible {
+  outline: none; /* ring is shown on the container instead */
+}
+
+/* Range slider thumb focus */
+.range-control input[type="range"]:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   Drawer Backdrop
+   Injected dynamically by app.js when a drawer is open
+   ============================================================ */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 99; /* below drawer (z-index: 100) */
+  backdrop-filter: blur(1px);
+  animation: backdrop-in 0.2s ease forwards;
+}
+
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Buttons */
+.btn {
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--text-inverse);
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--border-color);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+.btn-secondary:hover {
+  background-color: var(--bg-sidebar);
+}
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-icon:hover {
+  background-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.btn-icon-small {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+.btn-icon-small:hover {
+  background-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* Landing Zone / Drop Zone */
+.landing-zone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 2rem;
+  background-color: var(--bg-app);
+  transition: var(--theme-transition);
+}
+
+.drop-card {
+  background-color: var(--bg-card);
+  border: 2px dashed var(--border-color);
+  border-radius: 1.5rem;
+  padding: 3rem 2rem;
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.drop-card:hover, .drop-card.dragover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+}
+
+.drop-icon {
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+.drop-card:hover .drop-icon {
+  transform: scale(1.1);
+}
+
+.drop-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.drop-card p {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.hidden-input {
+  display: none;
+}

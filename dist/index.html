@@ -81,8 +81,8 @@
 
 </style>
   <style>
-/* Inlined css/style.css */
-/* Main Stylesheet for mdReader */
+/* Inlined css/base.css */
+/* Main Stylesheet for mdReader - Base, Reset, Typography, Utility & Buttons */
 
 /* Basic Reset & Base Styling */
 * {
@@ -223,70 +223,6 @@ body {
   to   { opacity: 1; }
 }
 
-/* App Containers */
-.app-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  position: relative;
-}
-
-/* Landing Zone / Drop Zone */
-.landing-zone {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  padding: 2rem;
-  background-color: var(--bg-app);
-  transition: var(--theme-transition);
-}
-
-.drop-card {
-  background-color: var(--bg-card);
-  border: 2px dashed var(--border-color);
-  border-radius: 1.5rem;
-  padding: 3rem 2rem;
-  text-align: center;
-  width: 100%;
-  max-width: 500px;
-  box-shadow: var(--shadow-lg);
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
-}
-
-.drop-card:hover, .drop-card.dragover {
-  border-color: var(--primary);
-  transform: translateY(-4px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
-}
-
-.drop-icon {
-  color: var(--primary);
-  margin-bottom: 1.5rem;
-  transition: transform 0.2s ease;
-}
-
-.drop-card:hover .drop-icon {
-  transform: scale(1.1);
-}
-
-.drop-card h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-.drop-card p {
-  color: var(--text-muted);
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-}
-
-.hidden-input {
-  display: none;
-}
-
 /* Buttons */
 .btn {
   font-family: inherit;
@@ -361,7 +297,74 @@ body {
   width: 100%;
 }
 
-/* Reader Layout */
+/* Landing Zone / Drop Zone */
+.landing-zone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 2rem;
+  background-color: var(--bg-app);
+  transition: var(--theme-transition);
+}
+
+.drop-card {
+  background-color: var(--bg-card);
+  border: 2px dashed var(--border-color);
+  border-radius: 1.5rem;
+  padding: 3rem 2rem;
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.drop-card:hover, .drop-card.dragover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+}
+
+.drop-icon {
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+.drop-card:hover .drop-icon {
+  transform: scale(1.1);
+}
+
+.drop-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.drop-card p {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.hidden-input {
+  display: none;
+}
+
+</style>
+  <style>
+/* Inlined css/layout.css */
+/* Layout and Structure */
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+}
+
 .reader-layout {
   display: flex;
   flex-direction: column;
@@ -428,68 +431,6 @@ body {
   transition: var(--theme-transition);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-  .mobile-only {
-    display: flex;
-  }
-  .toc-sidebar {
-    position: absolute;
-    top: 0;
-    left: -280px;
-    height: 100%;
-    z-index: 100;
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-lg);
-  }
-  .toc-sidebar.open {
-    left: 0;
-  }
-  .reader-header {
-    flex-wrap: wrap;
-    padding: 0.5rem 1rem;
-    gap: 0.5rem;
-  }
-  .header-left, .header-right {
-    width: 100%;
-    justify-content: space-between;
-  }
-  .search-container {
-    flex: 1;
-    margin-right: 0.5rem;
-  }
-  .search-container:focus-within {
-    width: auto;
-  }
-  #btn-presentation {
-    /* Show as icon-only on mobile — label hidden via .slides-label */
-    padding: 0.5rem;
-    min-width: 0;
-  }
-  #btn-presentation .slides-label {
-    display: none;
-  }
-  .file-size {
-    display: none;
-  }
-  .reading-canvas {
-    padding: 1.5rem 1rem;
-  }
-  .settings-panel {
-    width: 100%;
-    right: -100%;
-  }
-  .drop-card {
-    padding: 2rem 1rem;
-  }
-  .markdown-body {
-    font-size: 16px;
-  }
-  .markdown-body h1 { font-size: 1.8rem; }
-  .markdown-body h2 { font-size: 1.5rem; }
-  .markdown-body h3 { font-size: 1.25rem; }
-}
-
 .toc-header {
   display: flex;
   justify-content: space-between;
@@ -548,7 +489,143 @@ body {
 .toc-link.indent-2 { padding-left: 1.4rem; font-size: 0.85rem; }
 .toc-link.indent-3 { padding-left: 2.2rem; font-size: 0.8rem; }
 
-/* Reading Canvas */
+/* Zen Mode & Scroll Fade Layout Interactions */
+.zen-mode-active .reader-header,
+.zen-mode-active .toc-sidebar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-fade-active .reader-header,
+.scroll-fade-active .toc-sidebar {
+  opacity: 0.2;
+  transition: opacity 0.3s ease;
+}
+.scroll-fade-active .reader-header:hover,
+.scroll-fade-active .toc-sidebar:hover {
+  opacity: 1;
+}
+
+/* Search Container & Controls (Lives in Header) */
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
+  border-radius: 2rem;
+  padding: 0.25rem 0.75rem;
+  width: 220px;
+  transition: width 0.3s ease, border-color 0.2s ease;
+}
+
+.search-container:focus-within {
+  width: 280px;
+  border-color: var(--primary);
+}
+
+.search-container input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+.search-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.search-counter {
+  white-space: nowrap;
+  margin-right: 4px;
+}
+
+/* Search Highlighting */
+.search-highlight {
+  background-color: var(--search-match);
+  color: #000;
+  border-radius: 2px;
+}
+
+.search-highlight.search-current {
+  background-color: var(--search-current);
+  box-shadow: 0 0 0 2px var(--search-current);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .mobile-only {
+    display: flex;
+  }
+  .toc-sidebar {
+    position: absolute;
+    top: 0;
+    left: -280px;
+    height: 100%;
+    z-index: 100;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-lg);
+  }
+  .toc-sidebar.open {
+    left: 0;
+  }
+  .reader-header {
+    flex-wrap: wrap;
+    padding: 0.5rem 1rem;
+    gap: 0.5rem;
+  }
+  .header-left, .header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .search-container {
+    flex: 1;
+    margin-right: 0.5rem;
+  }
+  .search-container:focus-within {
+    width: auto;
+  }
+  #btn-presentation {
+    padding: 0.5rem;
+    min-width: 0;
+  }
+  #btn-presentation .slides-label {
+    display: none;
+  }
+  .file-size {
+    display: none;
+  }
+  .reading-canvas {
+    padding: 1.5rem 1rem;
+  }
+  .settings-panel {
+    width: 100%;
+    right: -100%;
+  }
+  .drop-card {
+    padding: 2rem 1rem;
+  }
+  .markdown-body {
+    font-size: 16px;
+  }
+  .markdown-body h1 { font-size: 1.8rem; }
+  .markdown-body h2 { font-size: 1.5rem; }
+  .markdown-body h3 { font-size: 1.25rem; }
+}
+
+</style>
+  <style>
+/* Inlined css/markdown.css */
+/* Markdown Content Rendering */
+
 .reading-canvas {
   flex: 1;
   overflow-y: auto;
@@ -568,27 +645,6 @@ body {
   transition: width 0.1s ease-out;
 }
 
-/* Zen Mode */
-.zen-mode-active .reader-header,
-.zen-mode-active .toc-sidebar {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-/* Scroll Fade */
-.scroll-fade-active .reader-header,
-.scroll-fade-active .toc-sidebar {
-  opacity: 0.2;
-  transition: opacity 0.3s ease;
-}
-.scroll-fade-active .reader-header:hover,
-.scroll-fade-active .toc-sidebar:hover {
-  opacity: 1;
-}
-
-
-/* Markdown Rendering Customizations */
 .markdown-body {
   margin: 0 auto;
   max-width: 800px;
@@ -715,303 +771,6 @@ body {
   border-color: var(--primary);
 }
 
-/* Search Highlighting */
-.search-highlight {
-  background-color: var(--search-match);
-  color: #000;
-  border-radius: 2px;
-}
-
-.search-highlight.search-current {
-  background-color: var(--search-current);
-  box-shadow: 0 0 0 2px var(--search-current);
-}
-
-/* Search Bar in Header */
-.search-container {
-  display: flex;
-  align-items: center;
-  background-color: var(--bg-sidebar);
-  border: 1px solid var(--border-color);
-  border-radius: 2rem;
-  padding: 0.25rem 0.75rem;
-  width: 220px;
-  transition: width 0.3s ease, border-color 0.2s ease;
-}
-
-.search-container:focus-within {
-  width: 280px;
-  border-color: var(--primary);
-}
-
-.search-container input {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--text-main);
-  font-family: inherit;
-  font-size: 0.85rem;
-  width: 100%;
-}
-
-.search-controls {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  margin-left: 0.5rem;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.search-counter {
-  white-space: nowrap;
-  margin-right: 4px;
-}
-
-/* Settings Drawer Panel */
-.settings-panel {
-  position: absolute;
-  top: 0;
-  right: -320px;
-  width: 320px;
-  height: 100%;
-  background-color: var(--bg-card);
-  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-    background-color: var(--bg-card-glass, var(--bg-card));
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
-  }
-  border-left: 1px solid var(--border-color);
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  flex-direction: column;
-  z-index: 100;
-  overflow-y: auto;       /* scroll when screen is short */
-  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 1.5rem;
-}
-
-.settings-panel.open {
-  right: 0;
-}
-
-.settings-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.settings-header h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.btn-close {
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--text-muted);
-}
-.btn-close:hover {
-  color: var(--text-main);
-}
-
-.settings-group {
-  margin-bottom: 1.5rem;
-}
-
-.settings-group.border-top {
-  border-top: 1px solid var(--border-color);
-  padding-top: 1.5rem;
-  margin-top: 1rem; /* was auto — predictable in scrollable flex container */
-}
-
-.settings-group label {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  margin-bottom: 0.5rem;
-}
-
-/* Settings Toggle Buttons */
-.theme-buttons, .layout-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  background-color: var(--bg-sidebar);
-  padding: 0.25rem;
-  border-radius: 0.5rem;
-}
-
-.font-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 0.5rem;
-  background-color: var(--bg-sidebar);
-  padding: 0.25rem;
-  border-radius: 0.5rem;
-}
-
-.btn-toggle {
-  background: transparent;
-  border: none;
-  font-family: inherit;
-  font-size: 0.85rem;
-  padding: 0.5rem;
-  border-radius: 0.35rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: var(--text-muted);
-}
-
-.btn-toggle:hover {
-  color: var(--text-main);
-}
-
-.btn-toggle.active {
-  background-color: var(--bg-card);
-  color: var(--text-main);
-  box-shadow: var(--shadow-sm);
-  font-weight: 500;
-}
-
-/* Range Sliders */
-.range-control {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.range-control input[type="range"] {
-  flex: 1;
-  accent-color: var(--primary);
-  height: 4px;
-  background-color: var(--border-color);
-  border-radius: 2px;
-}
-
-.range-val {
-  font-size: 0.85rem;
-  font-weight: 600;
-  width: 50px;
-  text-align: right;
-}
-
-.export-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-/* Presentation / Slides Mode Overlay */
-.presentation-mode {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #0b0f19; /* dark dark background */
-  color: #f1f5f9;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 2rem;
-  box-sizing: border-box;
-}
-
-.presentation-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 1rem;
-}
-
-.slide-title {
-  font-weight: 600;
-  font-size: 1rem;
-  color: #94a3b8;
-}
-
-.btn-close-presentation {
-  background: transparent;
-  border: none;
-  font-size: 2rem;
-  color: #94a3b8;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-.btn-close-presentation:hover {
-  color: #fff;
-}
-
-.slide-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-  overflow-y: auto;
-}
-
-.slide-content {
-  width: 100%;
-  max-width: 900px;
-  font-size: 2.2rem;
-  line-height: 1.5;
-}
-
-.slide-content h1, .slide-content h2, .slide-content h3 {
-  margin-bottom: 1.5rem;
-  color: #fff;
-  line-height: 1.2;
-}
-
-.slide-content h1 { font-size: 3.5rem; }
-.slide-content h2 { font-size: 2.8rem; }
-.slide-content h3 { font-size: 2.2rem; }
-
-.slide-content p, .slide-content ul, .slide-content ol, .slide-content blockquote {
-  margin-bottom: 1.5rem;
-  font-size: 2.2rem;
-}
-
-.slide-content li {
-  margin-left: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.presentation-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 1rem;
-}
-
-.btn-slide-nav {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: #fff;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  font-family: inherit;
-}
-.btn-slide-nav:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.slide-counter {
-  font-size: 1rem;
-  color: #94a3b8;
-}
-
 /* Tables styling */
 .markdown-body table {
   min-width: 100%;          /* allows wide tables to overflow the wrapper */
@@ -1047,9 +806,223 @@ body {
   border-radius: 6px;
 }
 
-/* ============================================================
-   Toast Notification System
-   ============================================================ */
+</style>
+  <style>
+/* Inlined css/panels.css */
+/* Settings Panel, Presentation Mode, and Toast Notifications */
+
+/* Settings Drawer Panel */
+.settings-panel {
+  position: absolute;
+  top: 0;
+  right: -320px;
+  width: 320px;
+  height: 100%;
+  background-color: var(--bg-card);
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    background-color: var(--bg-card-glass, var(--bg-card));
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+  }
+  border-left: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 1.5rem;
+}
+.settings-panel.open { right: 0; }
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.settings-header h3 { font-size: 1.1rem; font-weight: 600; }
+
+.btn-close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+.btn-close:hover { color: var(--text-main); }
+
+.settings-group { margin-bottom: 1.5rem; }
+.settings-group.border-top {
+  border-top: 1px solid var(--border-color);
+  padding-top: 1.5rem;
+  margin-top: 1rem;
+}
+.settings-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+/* Settings Toggle Buttons */
+.theme-buttons, .layout-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  background-color: var(--bg-sidebar);
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+}
+.font-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 0.5rem;
+  background-color: var(--bg-sidebar);
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+}
+.btn-toggle {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.5rem;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-muted);
+}
+.btn-toggle:hover { color: var(--text-main); }
+.btn-toggle.active {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
+  font-weight: 500;
+}
+
+/* Range Sliders */
+.range-control {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.range-control input[type="range"] {
+  flex: 1;
+  accent-color: var(--primary);
+  height: 4px;
+  background-color: var(--border-color);
+  border-radius: 2px;
+}
+.range-val {
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: 50px;
+  text-align: right;
+}
+.export-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Presentation / Slides Mode Overlay */
+.presentation-mode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0b0f19;
+  color: #f1f5f9;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+.presentation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
+}
+.slide-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #94a3b8;
+}
+.btn-close-presentation {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.btn-close-presentation:hover { color: #fff; }
+
+.slide-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  overflow-y: auto;
+}
+.slide-content {
+  width: 100%;
+  max-width: 900px;
+  font-size: 2.2rem;
+  line-height: 1.5;
+}
+.slide-content h1, .slide-content h2, .slide-content h3 {
+  margin-bottom: 1.5rem;
+  color: #fff;
+  line-height: 1.2;
+}
+.slide-content h1 { font-size: 3.5rem; }
+.slide-content h2 { font-size: 2.8rem; }
+.slide-content h3 { font-size: 2.2rem; }
+
+.slide-content p, .slide-content ul, .slide-content ol, .slide-content blockquote {
+  margin-bottom: 1.5rem;
+  font-size: 2.2rem;
+}
+.slide-content li {
+  margin-left: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.presentation-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1rem;
+}
+.btn-slide-nav {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: inherit;
+}
+.btn-slide-nav:hover { background-color: rgba(255, 255, 255, 0.2); }
+.slide-counter { font-size: 1rem; color: #94a3b8; }
+.btn-slide-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Toast Notification System */
 .toast-container {
   position: fixed;
   bottom: 1.5rem;
@@ -1061,7 +1034,6 @@ body {
   max-width: 380px;
   pointer-events: none;
 }
-
 .toast {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -1077,32 +1049,23 @@ body {
   animation: toast-in 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
-
 .toast.toast-error   { border-left: 4px solid #ef4444; }
 .toast.toast-info    { border-left: 4px solid var(--primary); }
 .toast.toast-warning { border-left: 4px solid #f59e0b; }
-
 .toast.toast-exit {
   opacity: 0;
   transform: translateX(120%);
 }
-
 @keyframes toast-in {
   from { opacity: 0; transform: translateX(120%); }
   to   { opacity: 1; transform: translateX(0); }
 }
-
 .toast-icon {
   flex-shrink: 0;
   font-size: 1rem;
   line-height: 1.5;
 }
-
-.toast-body {
-  flex: 1;
-  color: var(--text-main);
-}
-
+.toast-body { flex: 1; color: var(--text-main); }
 .toast-close {
   background: none;
   border: none;
@@ -1115,13 +1078,6 @@ body {
   transition: color 0.15s ease;
 }
 .toast-close:hover { color: var(--text-main); }
-
-/* Slide nav disabled state */
-.btn-slide-nav:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-  pointer-events: none;
-}
 
 </style>
   <style media="print">
@@ -1803,7 +1759,7 @@ body {
             theme: document.body.classList.contains('theme-dark') ? 'dark' : 'default'
           });
 
-          const mermaidBlocks = document.querySelectorAll('.mermaid');
+          const mermaidBlocks = document.querySelectorAll('.mermaid:not([data-mermaid-rendered="true"])');
 
           if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver((entries, obs) => {
@@ -2569,18 +2525,14 @@ body {
 
 </script>
   <script>
-/* Inlined js/app.js */
+/* Inlined js/ui.js */
 /**
- * mdReader - app.js
- * Main entry orchestrator. Hooks DOM elements, manages file uploading/dropping,
- * wires layout preferences, sets up search queries, shortcuts, and navigation flow.
+ * mdReader - ui.js
+ * Utility functions for UI transitions, notifications, and drawer controls.
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-
-  // ----------------------------------------------------------------
-  // Utilities
-  // ----------------------------------------------------------------
+(function () {
+  window.App = window.App || {};
 
   /**
    * Returns a debounced version of fn that delays invocation by `delay` ms.
@@ -2594,7 +2546,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * Display a brief notification toast (replaces blocking alert()).
+   * Display a brief notification toast.
    * @param {string} message
    * @param {'error'|'info'|'warning'} type
    * @param {number} duration  Auto-dismiss in ms; 0 = stay until closed manually.
@@ -2610,7 +2562,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toast.innerHTML = `
       <span class="toast-icon" aria-hidden="true">${icons[type] || '\u2022'}</span>
       <span class="toast-body">${message}</span>
-      <button class="toast-close" aria-label="Fechar notifica\u00e7\u00e3o">\u00d7</button>
+      <button class="toast-close" aria-label="Fechar notificação">\u00d7</button>
     `;
     const closeBtn = toast.querySelector('.toast-close');
     const dismiss = () => {
@@ -2621,78 +2573,11 @@ document.addEventListener('DOMContentLoaded', () => {
     container.appendChild(toast);
     if (duration > 0) setTimeout(dismiss, duration);
   }
-  // Expose globally so presentation.js and other modules can use it
+  // Expose globally
   window.showToast = showToast;
 
-  // --- DOM References ---
-  const landingZone = document.getElementById('landing-zone');
-  const dropCard = document.getElementById('drop-card');
-  const fileInput = document.getElementById('file-input');
-  const browseBtn = document.getElementById('browse-btn');
-
-  const readerLayout = document.getElementById('reader-layout');
-  const btnBackLanding = document.getElementById('btn-back-landing');
-  const btnToggleToc = document.getElementById('btn-toggle-toc');
-  const btnCloseToc = document.getElementById('btn-close-toc');
-  const tocSidebar = document.getElementById('toc-sidebar');
-  const displayFileName = document.getElementById('display-file-name');
-  const displayFileSize = document.getElementById('display-file-size');
-
-  const renderTarget = document.getElementById('render-target');
-  
-  // Search
-  const searchInput = document.getElementById('search-input');
-  const btnSearchPrev = document.getElementById('search-prev');
-  const btnSearchNext = document.getElementById('search-next');
-
-  // Presentation Mode
-  const btnPresentation = document.getElementById('btn-presentation');
-  const btnClosePresentation = document.getElementById('btn-close-presentation');
-  const btnSlidePrev = document.getElementById('slide-prev');
-  const btnSlideNext = document.getElementById('slide-next');
-
-  // Settings Panel
-  const btnToggleSettings = document.getElementById('btn-toggle-settings');
-  const settingsPanel = document.getElementById('settings-panel');
-  const btnCloseSettings = document.getElementById('btn-close-settings');
-
-  // Settings Controls
-  const themeBtns = document.querySelectorAll('[data-theme]');
-  const fontBtns = document.querySelectorAll('[data-font]');
-  const layoutBtns = document.querySelectorAll('[data-layout]');
-  const fontSizeRange = document.getElementById('setting-font-size');
-  const lineHeightRange = document.getElementById('setting-line-height');
-  const maxWidthRange = document.getElementById('setting-max-width');
-
-  // Exports
-  const btnExportHtml = document.getElementById('btn-export-html');
-  const btnExportPdf = document.getElementById('btn-export-pdf');
-
-  // Raw text container
-  let currentMarkdownText = '';
-  let currentFile = null;
-
-  // --- Initialize Sub-Modules ---
-  if (window.TOC) window.TOC.init('toc-nav-container');
-  if (window.Search) window.Search.init('render-target');
-  if (window.Presentation) window.Presentation.init();
-
-  // --- Accessible Drawer Helper ---
   /**
-   * Creates an accessible drawer (slide-in panel) that:
-   * - Sets aria-expanded on the trigger button
-   * - Injects a semi-transparent backdrop into the DOM
-   * - Moves focus to the first focusable element inside the panel on open
-   * - Traps Tab focus within the panel while open
-   * - Returns focus to the trigger button on close
-   * - Closes on Escape or backdrop click
-   *
-   * @param {Object} opts
-   * @param {HTMLElement} opts.panel     - The drawer/aside element
-   * @param {HTMLElement} opts.trigger   - Button that opens the drawer
-   * @param {HTMLElement} opts.closeBtn  - Button inside the drawer that closes it
-   * @param {string}      opts.openClass - CSS class applied to the panel when open (default 'open')
-   * @returns {{ open, close, isOpen }}
+   * Creates an accessible drawer (slide-in panel)
    */
   function createDrawer({ panel, trigger, closeBtn, openClass = 'open' }) {
     let backdrop = null;
@@ -2730,25 +2615,20 @@ document.addEventListener('DOMContentLoaded', () => {
       previouslyFocused = document.activeElement;
       panel.classList.add(openClass);
 
-      // ARIA state
       if (trigger) trigger.setAttribute('aria-expanded', 'true');
 
-      // Inject backdrop
       backdrop = document.createElement('div');
       backdrop.className = 'drawer-backdrop';
       backdrop.setAttribute('aria-hidden', 'true');
       backdrop.addEventListener('click', close);
       document.body.appendChild(backdrop);
 
-      // Move focus inside
       const focusable = getFocusable();
       if (focusable.length > 0) {
-        // Prefer a close button, otherwise first focusable element
         const closeEl = panel.querySelector('[id$="-close"], [id$="close-"], .btn-close, .btn-close-presentation');
         (closeEl || focusable[0]).focus();
       }
 
-      // Trap focus and listen for Esc
       panel.addEventListener('keydown', trapTab);
       document.addEventListener('keydown', handleEsc);
     }
@@ -2756,26 +2636,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function close() {
       panel.classList.remove(openClass);
 
-      // ARIA state
       if (trigger) trigger.setAttribute('aria-expanded', 'false');
 
-      // Remove backdrop
       if (backdrop) {
         backdrop.remove();
         backdrop = null;
       }
 
-      // Remove listeners
       panel.removeEventListener('keydown', trapTab);
       document.removeEventListener('keydown', handleEsc);
 
-      // Return focus
       if (previouslyFocused && typeof previouslyFocused.focus === 'function') {
         previouslyFocused.focus();
       }
     }
 
-    // Wire the dedicated close button inside the panel
     if (closeBtn) closeBtn.addEventListener('click', close);
 
     return {
@@ -2786,127 +2661,76 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Sync settings panel values with stored Settings values
-  if (window.Settings) {
-    const s = window.Settings.settings;
-    
-    // Theme
-    themeBtns.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.theme === s.theme);
-    });
-    // Font
-    fontBtns.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.font === s.font);
-    });
-    // Layout
-    if (layoutBtns) {
-      layoutBtns.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.layout === s.layout);
-      });
-    }
-    // Range Sliders
-    if (fontSizeRange) fontSizeRange.value = s.fontSize;
-    if (lineHeightRange) lineHeightRange.value = s.lineHeight;
-    if (maxWidthRange) maxWidthRange.value = s.maxWidth;
-  }
+  // Bind to App namespace
+  window.App.debounce = debounce;
+  window.App.createDrawer = createDrawer;
+})();
 
-  // --- Drag and Drop File Handlers ---
-  
-  // Browse click triggers hidden input
-  browseBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    fileInput.click();
-  });
+</script>
+  <script>
+/* Inlined js/file-loader.js */
+/**
+ * mdReader - file-loader.js
+ * Manages loading, reading, compiling, rendering and local storage persistence of Markdown documents.
+ */
 
-  dropCard.addEventListener('click', () => {
-    fileInput.click();
-  });
+(function () {
+  window.App = window.App || {};
 
-  fileInput.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) {
-      handleFileSelected(e.target.files[0]);
-    }
-  });
+  // Global app state definition
+  window.App.state = {
+    currentMarkdownText: '',
+    currentFile: null
+  };
 
-  // Drag states styling
-  ['dragenter', 'dragover'].forEach(eventName => {
-    dropCard.addEventListener(eventName, (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dropCard.classList.add('dragover');
-    }, false);
-  });
-
-  ['dragleave', 'drop'].forEach(eventName => {
-    dropCard.addEventListener(eventName, (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dropCard.classList.remove('dragover');
-    }, false);
-  });
-
-  dropCard.addEventListener('drop', (e) => {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    if (files.length > 0) {
-      handleFileSelected(files[0]);
-    }
-  });
-
+  /**
+   * Estimates reading time based on standard words per minute.
+   */
   function calculateReadingTime(text) {
-    if (!text || typeof text !== 'string') return 0;
     const wordsPerMinute = 225;
-    const trimmed = text.trim();
-    if (!trimmed) return 0;
-    const words = trimmed.split(/\s+/).length;
+    const words = text.trim().split(/\s+/).length;
     return Math.ceil(words / wordsPerMinute);
   }
 
   /**
-   * Reads, compiles and displays a markdown file
+   * Helper to format file size in bytes into human readable format.
    */
-  function handleFileSelected(file) {
-    // Basic format validation
-    const name = file.name.toLowerCase();
-    if (!name.endsWith('.md') && !name.endsWith('.markdown') && !name.endsWith('.txt')) {
-      showToast('Formato inválido: selecione um arquivo Markdown (.md, .markdown) ou texto simples (.txt).', 'error');
-      return;
-    }
+  function formatBytes(bytes, decimals = 1) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  }
 
-    currentFile = file;
+  /**
+   * Saves current file progress and scroll state to localStorage.
+   */
+  function saveSession() {
+    const state = window.App.state;
+    const readingCanvas = document.getElementById('reading-canvas');
+    if (!state.currentFile || !state.currentMarkdownText) return;
 
-    // Load file content
-    if (window.Markdown) {
-      window.Markdown.readFile(file)
-        .then(text => {
-          currentMarkdownText = text;
-          renderDocument(text);
-          
-          // Switch layouts
-          landingZone.classList.add('hidden');
-          readerLayout.classList.remove('hidden');
-          
-          // Update file information in header
-          displayFileName.textContent = file.name;
-          const readingTime = calculateReadingTime(text);
-          displayFileSize.textContent = `${formatBytes(file.size)} • Est. ${readingTime} min de leitura`;
-          
-          const readingCanvas = document.getElementById('reading-canvas');
-          if (readingCanvas) readingCanvas.scrollTop = 0;
-          saveSession();
-        })
-        .catch(err => {
-          console.error(err);
-          showToast('Erro ao carregar o arquivo: ' + err.message, 'error');
-        });
+    // Only save if file is under 2MB to prevent localStorage quota exhaustion
+    if (state.currentMarkdownText.length < 2 * 1024 * 1024) {
+      const sessionData = {
+        name: state.currentFile.name,
+        text: state.currentMarkdownText,
+        scroll: readingCanvas ? readingCanvas.scrollTop : 0
+      };
+      localStorage.setItem('mdReader_session', JSON.stringify(sessionData));
     }
   }
 
   /**
-   * Compiles, sanitizes, and binds details to target elements
+   * Compiles Markdown text, updates render target, structures TOC, resets search and sets slides.
    */
   function renderDocument(text) {
     if (!window.Markdown) return;
+    const renderTarget = document.getElementById('render-target');
+    const searchInput = document.getElementById('search-input');
+    if (!renderTarget) return;
 
     // 1. Compile & Sanitize
     const htmlContent = window.Markdown.parse(text);
@@ -2928,45 +2752,176 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. Reset Search query
     if (window.Search) {
       window.Search.clear();
-      searchInput.value = '';
+      if (searchInput) searchInput.value = '';
     }
 
     // 5. Parse slides for presentation mode
     if (window.Presentation) {
-      window.Presentation.parseMarkdown(text, currentFile ? currentFile.name : 'Presentation');
+      const state = window.App.state;
+      window.Presentation.parseMarkdown(text, state.currentFile ? state.currentFile.name : 'Presentation');
     }
   }
 
   /**
-   * Reset / return to drop card landing zone
+   * Handles markdown file loading, triggers parser, updates headers and visibility.
    */
-  btnBackLanding.addEventListener('click', () => {
-    currentMarkdownText = '';
-    currentFile = null;
-    fileInput.value = '';
-    
-    localStorage.removeItem('mdReader_session');
-    
-    readerLayout.classList.add('hidden');
-    landingZone.classList.remove('hidden');
-  });
+  function handleFileSelected(file) {
+    const name = file.name.toLowerCase();
+    if (!name.endsWith('.md') && !name.endsWith('.markdown') && !name.endsWith('.txt')) {
+      if (window.showToast) {
+        window.showToast('Formato inválido: selecione um arquivo Markdown (.md, .markdown) ou texto simples (.txt).', 'error');
+      }
+      return;
+    }
 
-  // --- Mobile TOC Binding ---
-  // (handled by tocDrawer below)
+    const state = window.App.state;
+    state.currentFile = file;
+
+    if (window.Markdown) {
+      window.Markdown.readFile(file)
+        .then(text => {
+          state.currentMarkdownText = text;
+          renderDocument(text);
+
+          // Switch layouts
+          const landingZone = document.getElementById('landing-zone');
+          const readerLayout = document.getElementById('reader-layout');
+          const displayFileName = document.getElementById('display-file-name');
+          const displayFileSize = document.getElementById('display-file-size');
+
+          if (landingZone) landingZone.classList.add('hidden');
+          if (readerLayout) readerLayout.classList.remove('hidden');
+
+          if (displayFileName) displayFileName.textContent = file.name;
+          const readingTime = calculateReadingTime(text);
+          if (displayFileSize) {
+            displayFileSize.textContent = `${formatBytes(file.size)} • Est. ${readingTime} min de leitura`;
+          }
+
+          const readingCanvas = document.getElementById('reading-canvas');
+          if (readingCanvas) readingCanvas.scrollTop = 0;
+          saveSession();
+        })
+        .catch(err => {
+          console.error(err);
+          if (window.showToast) {
+            window.showToast('Erro ao carregar o arquivo: ' + err.message, 'error');
+          }
+        });
+    }
+  }
+
+  /**
+   * Attempts to restore any previous markdown reading session.
+   */
+  function restoreSession() {
+    try {
+      const saved = localStorage.getItem('mdReader_session');
+      if (saved) {
+        const sessionData = JSON.parse(saved);
+        if (sessionData && sessionData.text) {
+          const state = window.App.state;
+          state.currentFile = { name: sessionData.name, size: 0 };
+          state.currentMarkdownText = sessionData.text;
+
+          renderDocument(state.currentMarkdownText);
+
+          const landingZone = document.getElementById('landing-zone');
+          const readerLayout = document.getElementById('reader-layout');
+          const displayFileName = document.getElementById('display-file-name');
+          const displayFileSize = document.getElementById('display-file-size');
+          const readingCanvas = document.getElementById('reading-canvas');
+
+          if (landingZone) landingZone.classList.add('hidden');
+          if (readerLayout) readerLayout.classList.remove('hidden');
+
+          if (displayFileName) displayFileName.textContent = state.currentFile.name;
+          if (displayFileSize) displayFileSize.textContent = 'Sessão restaurada';
+
+          setTimeout(() => {
+            if (sessionData.scroll && readingCanvas) {
+              readingCanvas.scrollTop = sessionData.scroll;
+            }
+          }, 150);
+        }
+      }
+    } catch (e) {
+      console.warn('Could not restore session', e);
+    }
+  }
+
+  // Bind to App namespace
+  window.App.renderDocument = renderDocument;
+  window.App.handleFileSelected = handleFileSelected;
+  window.App.saveSession = saveSession;
+  window.App.restoreSession = restoreSession;
+})();
+
+</script>
+  <script>
+/* Inlined js/app.js */
+/**
+ * mdReader - app.js
+ * Main entry orchestrator. Hooks DOM elements, manages file uploading/dropping,
+ * wires layout preferences, sets up search queries, shortcuts, and navigation flow.
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  const App = window.App;
+  if (!App) {
+    console.error('App utility/loader modules not loaded!');
+    return;
+  }
+
+  // --- DOM References ---
+  const landingZone = document.getElementById('landing-zone'),
+        dropCard = document.getElementById('drop-card'),
+        fileInput = document.getElementById('file-input'),
+        browseBtn = document.getElementById('browse-btn');
+
+  const readerLayout = document.getElementById('reader-layout'),
+        btnBackLanding = document.getElementById('btn-back-landing'),
+        btnToggleToc = document.getElementById('btn-toggle-toc'),
+        btnCloseToc = document.getElementById('btn-close-toc'),
+        tocSidebar = document.getElementById('toc-sidebar'),
+        displayFileName = document.getElementById('display-file-name'),
+        displayFileSize = document.getElementById('display-file-size'),
+        renderTarget = document.getElementById('render-target');
+  
+  const searchInput = document.getElementById('search-input'),
+        btnSearchPrev = document.getElementById('search-prev'),
+        btnSearchNext = document.getElementById('search-next');
+
+  const btnPresentation = document.getElementById('btn-presentation'),
+        btnClosePresentation = document.getElementById('btn-close-presentation'),
+        btnSlidePrev = document.getElementById('slide-prev'),
+        btnSlideNext = document.getElementById('slide-next');
+
+  const btnToggleSettings = document.getElementById('btn-toggle-settings'),
+        settingsPanel = document.getElementById('settings-panel'),
+        btnCloseSettings = document.getElementById('btn-close-settings');
+
+  const themeBtns = document.querySelectorAll('[data-theme]'),
+        fontBtns = document.querySelectorAll('[data-font]'),
+        layoutBtns = document.querySelectorAll('[data-layout]'),
+        fontSizeRange = document.getElementById('setting-font-size'),
+        lineHeightRange = document.getElementById('setting-line-height'),
+        maxWidthRange = document.getElementById('setting-max-width');
+
+  const btnExportHtml = document.getElementById('btn-export-html'),
+        btnExportPdf = document.getElementById('btn-export-pdf');
+
+  // --- Initialize Sub-Modules ---
+  if (window.TOC) window.TOC.init('toc-nav-container');
+  if (window.Search) window.Search.init('render-target');
+  if (window.Presentation) window.Presentation.init();
 
   // --- Accessible Drawers ---
+  const settingsDrawer = App.createDrawer({ panel: settingsPanel, trigger: btnToggleSettings, closeBtn: btnCloseSettings }),
+        tocDrawer = App.createDrawer({ panel: tocSidebar, trigger: btnToggleToc, closeBtn: btnCloseToc });
 
-  const settingsDrawer = createDrawer({
-    panel:     settingsPanel,
-    trigger:   btnToggleSettings,
-    closeBtn:  btnCloseSettings
-  });
-
-  const tocDrawer = createDrawer({
-    panel:    tocSidebar,
-    trigger:  btnToggleToc,
-    closeBtn: btnCloseToc
-  });
+  App.settingsDrawer = settingsDrawer;
+  App.tocDrawer = tocDrawer;
 
   btnToggleSettings.addEventListener('click', () => settingsDrawer.toggle());
 
@@ -2981,13 +2936,58 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Sync settings panel values with stored Settings values
+  if (window.Settings) {
+    const s = window.Settings.settings;
+    themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === s.theme));
+    fontBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.font === s.font));
+    if (layoutBtns) layoutBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.layout === s.layout));
+    if (fontSizeRange) fontSizeRange.value = s.fontSize;
+    if (lineHeightRange) lineHeightRange.value = s.lineHeight;
+    if (maxWidthRange) maxWidthRange.value = s.maxWidth;
+  }
+
+  // --- Drag and Drop File Handlers ---
+  browseBtn.addEventListener('click', (e) => { e.stopPropagation(); fileInput.click(); });
+  dropCard.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) App.handleFileSelected(e.target.files[0]);
+  });
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropCard.addEventListener(eventName, (e) => {
+      e.preventDefault(); e.stopPropagation(); dropCard.classList.add('dragover');
+    }, false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropCard.addEventListener(eventName, (e) => {
+      e.preventDefault(); e.stopPropagation(); dropCard.classList.remove('dragover');
+    }, false);
+  });
+
+  dropCard.addEventListener('drop', (e) => {
+    const files = e.dataTransfer.files;
+    if (files.length > 0) App.handleFileSelected(files[0]);
+  });
+
+  /**
+   * Reset / return to drop card landing zone
+   */
+  btnBackLanding.addEventListener('click', () => {
+    App.state.currentMarkdownText = '';
+    App.state.currentFile = null;
+    fileInput.value = '';
+    localStorage.removeItem('mdReader_session');
+    readerLayout.classList.add('hidden');
+    landingZone.classList.remove('hidden');
+  });
+
   const btnResetSettings = document.getElementById('btn-reset-settings');
   if (btnResetSettings) {
     btnResetSettings.addEventListener('click', () => {
       if (window.Settings) {
         window.Settings.reset();
-        
-        // Sync UI back
         const s = window.Settings.settings;
         themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === s.theme));
         fontBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.font === s.font));
@@ -2999,158 +2999,84 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Theme Switches
-  themeBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const theme = btn.dataset.theme;
-      if (window.Settings) {
-        window.Settings.set('theme', theme);
-      }
-      themeBtns.forEach(b => b.classList.toggle('active', b === btn));
-    });
-  });
+  // Theme, Font and Layout Switches
+  themeBtns.forEach(btn => btn.addEventListener('click', () => {
+    if (window.Settings) window.Settings.set('theme', btn.dataset.theme);
+    themeBtns.forEach(b => b.classList.toggle('active', b === btn));
+  }));
 
-  // Font Switches
-  fontBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const font = btn.dataset.font;
-      if (window.Settings) {
-        window.Settings.set('font', font);
-      }
-      fontBtns.forEach(b => b.classList.toggle('active', b === btn));
-    });
-  });
+  fontBtns.forEach(btn => btn.addEventListener('click', () => {
+    if (window.Settings) window.Settings.set('font', btn.dataset.font);
+    fontBtns.forEach(b => b.classList.toggle('active', b === btn));
+  }));
 
-  // Layout Switches
   if (layoutBtns) {
-    layoutBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const layout = btn.dataset.layout;
-        if (window.Settings) {
-          window.Settings.set('layout', layout);
-        }
-        layoutBtns.forEach(b => b.classList.toggle('active', b === btn));
-      });
-    });
+    layoutBtns.forEach(btn => btn.addEventListener('click', () => {
+      if (window.Settings) window.Settings.set('layout', btn.dataset.layout);
+      layoutBtns.forEach(b => b.classList.toggle('active', b === btn));
+    }));
   }
 
   // Range Slider Adjustments
-  if (fontSizeRange) {
-    fontSizeRange.addEventListener('input', (e) => {
-      if (window.Settings) window.Settings.set('fontSize', e.target.value);
-    });
-  }
-
-  if (lineHeightRange) {
-    lineHeightRange.addEventListener('input', (e) => {
-      if (window.Settings) window.Settings.set('lineHeight', e.target.value);
-    });
-  }
-
-  if (maxWidthRange) {
-    maxWidthRange.addEventListener('input', (e) => {
-      if (window.Settings) window.Settings.set('maxWidth', e.target.value);
-    });
-  }
+  if (fontSizeRange) fontSizeRange.addEventListener('input', e => window.Settings && window.Settings.set('fontSize', e.target.value));
+  if (lineHeightRange) lineHeightRange.addEventListener('input', e => window.Settings && window.Settings.set('lineHeight', e.target.value));
+  if (maxWidthRange) maxWidthRange.addEventListener('input', e => window.Settings && window.Settings.set('maxWidth', e.target.value));
 
   // --- Real-time Search Binding ---
-
-  const debouncedSearch = debounce((val) => {
+  const debouncedSearch = App.debounce((val) => {
     if (!window.Search) return;
-    if (val === '') {
-      window.Search.clear();
-    } else {
-      window.Search.search(val);
-    }
+    if (val === '') window.Search.clear();
+    else window.Search.search(val);
   }, 300);
 
-  searchInput.addEventListener('input', (e) => {
-    debouncedSearch(e.target.value);
-  });
+  searchInput.addEventListener('input', e => debouncedSearch(e.target.value));
 
-  // Enter: scroll to current match without advancing.
-  // Shift+Enter: go to previous match (with scroll).
   searchInput.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter' || !window.Search) return;
     e.preventDefault();
-    if (e.shiftKey) {
-      window.Search.prev();
-    } else if (window.Search.matches.length > 0) {
-      window.Search.scrollToCurrent();
-    }
+    if (e.shiftKey) window.Search.prev();
+    else if (window.Search.matches.length > 0) window.Search.scrollToCurrent();
   });
 
-  btnSearchPrev.addEventListener('click', () => {
-    if (window.Search) window.Search.prev();
-  });
-
-  btnSearchNext.addEventListener('click', () => {
-    if (window.Search) window.Search.next();
-  });
+  btnSearchPrev.addEventListener('click', () => window.Search && window.Search.prev());
+  btnSearchNext.addEventListener('click', () => window.Search && window.Search.next());
 
   // --- Exports Binding ---
-  
   btnExportHtml.addEventListener('click', () => {
-    if (window.Export) {
-      window.Export.exportToHTML(renderTarget, currentFile ? currentFile.name : 'document.html');
-    }
+    if (window.Export) window.Export.exportToHTML(renderTarget, App.state.currentFile ? App.state.currentFile.name : 'document.html');
   });
-
-  btnExportPdf.addEventListener('click', () => {
-    if (window.Export) window.Export.exportToPDF();
-  });
+  btnExportPdf.addEventListener('click', () => window.Export && window.Export.exportToPDF());
 
   // --- Presentation Bindings ---
-  
-  btnPresentation.addEventListener('click', () => {
-    if (window.Presentation) window.Presentation.start();
-  });
-
-  btnClosePresentation.addEventListener('click', () => {
-    if (window.Presentation) window.Presentation.stop();
-  });
-
-  btnSlidePrev.addEventListener('click', () => {
-    if (window.Presentation) window.Presentation.prev();
-  });
-
-  btnSlideNext.addEventListener('click', () => {
-    if (window.Presentation) window.Presentation.next();
-  });
+  btnPresentation.addEventListener('click', () => window.Presentation && window.Presentation.start());
+  btnClosePresentation.addEventListener('click', () => window.Presentation && window.Presentation.stop());
+  btnSlidePrev.addEventListener('click', () => window.Presentation && window.Presentation.prev());
+  btnSlideNext.addEventListener('click', () => window.Presentation && window.Presentation.next());
 
   // --- Keyboard Shortcuts & Utilities ---
-  
   window.addEventListener('keydown', (e) => {
-    // Focus search bar shortcut: / or Ctrl+F / Cmd+F (let's use / as standard keyboard key)
     if (e.key === '/' && document.activeElement !== searchInput && !window.Presentation?.isActive) {
-      e.preventDefault();
-      searchInput.focus();
-      searchInput.select();
+      e.preventDefault(); searchInput.focus(); searchInput.select();
     }
     
-    // Zen Mode Shortcut: Z
     const isEditable = document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.isContentEditable;
     if ((e.key === 'z' || e.key === 'Z') && !isEditable && !window.Presentation?.isActive) {
       e.preventDefault();
       const isZen = readerLayout.classList.toggle('zen-mode-active');
       if (isZen) {
         if (tocDrawer.isOpen) tocDrawer.close();
-        showToast('Modo Zen Ativado (Pressione Z para sair)', 'info', 2000);
+        if (window.showToast) window.showToast('Modo Zen Ativado (Pressione Z para sair)', 'info', 2000);
       }
     }
 
-    // Toggle theme shortcut: 't' (when not inside inputs)
     if (e.key === 't' && document.activeElement.tagName !== 'INPUT' && !window.Presentation?.isActive) {
       if (window.Settings) {
         const nextTheme = window.Settings.settings.theme === 'light' ? 'dark' : 'light';
         window.Settings.set('theme', nextTheme);
-        themeBtns.forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.theme === nextTheme);
-        });
+        themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === nextTheme));
       }
     }
 
-    // Escape closes whichever drawer is open (focus is returned by each drawer's own handler)
     if (e.key === 'Escape') {
       if (settingsDrawer.isOpen) settingsDrawer.close();
       if (tocDrawer.isOpen)      tocDrawer.close();
@@ -3158,97 +3084,40 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- Session Persistence ---
-  
-  const readingCanvas = document.getElementById('reading-canvas');
-  let scrollTimeout;
-  
-  let lastScrollTop = 0;
-
-  const readingProgress = document.getElementById('reading-progress');
+  const readingCanvas = document.getElementById('reading-canvas'),
+        readingProgress = document.getElementById('reading-progress');
+  let scrollTimeout, lastScrollTop = 0;
 
   if (readingCanvas) {
     readingCanvas.addEventListener('scroll', () => {
       const currentScrollTop = readingCanvas.scrollTop;
 
-      // Reading Progress logic
       if (readingProgress) {
         const scrollHeight = readingCanvas.scrollHeight - readingCanvas.clientHeight;
         const progress = scrollHeight > 0 ? (currentScrollTop / scrollHeight) * 100 : 0;
         readingProgress.style.width = `${progress}%`;
       }
 
-      // Scroll Fade logic
       const scrollDelta = currentScrollTop - lastScrollTop;
-      lastScrollTop = currentScrollTop;
-
       if (scrollDelta > 0 && currentScrollTop > 30) {
-        document.body.classList.add('scroll-fade-active');
+        if (scrollDelta > 30 || document.body.classList.contains('scroll-fade-active')) {
+           document.body.classList.add('scroll-fade-active');
+        }
       } else if (scrollDelta < 0) {
-        document.body.classList.remove('scroll-fade-active');
+        if (Math.abs(scrollDelta) > 30 || !document.body.classList.contains('scroll-fade-active')) {
+          document.body.classList.remove('scroll-fade-active');
+        }
       }
 
+      if (Math.abs(scrollDelta) > 30) lastScrollTop = currentScrollTop;
+
       clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(saveSession, 500);
+      scrollTimeout = setTimeout(App.saveSession, 500);
     });
   }
 
-  function saveSession() {
-    if (!currentFile || !currentMarkdownText) return;
-    
-    // Only save if file is under 2MB to prevent quota exhaustion
-    if (currentMarkdownText.length < 2 * 1024 * 1024) {
-      const sessionData = {
-        name: currentFile.name,
-        text: currentMarkdownText,
-        scroll: readingCanvas ? readingCanvas.scrollTop : 0
-      };
-      localStorage.setItem('mdReader_session', JSON.stringify(sessionData));
-    }
-  }
-
-  function restoreSession() {
-    try {
-      const saved = localStorage.getItem('mdReader_session');
-      if (saved) {
-        const sessionData = JSON.parse(saved);
-        if (sessionData && sessionData.text) {
-          currentFile = { name: sessionData.name, size: 0 };
-          currentMarkdownText = sessionData.text;
-          
-          renderDocument(currentMarkdownText);
-          
-          landingZone.classList.add('hidden');
-          readerLayout.classList.remove('hidden');
-          
-          displayFileName.textContent = currentFile.name;
-          displayFileSize.textContent = 'Sessão restaurada';
-          
-          setTimeout(() => {
-            if (sessionData.scroll && readingCanvas) {
-              readingCanvas.scrollTop = sessionData.scroll;
-            }
-          }, 150);
-        }
-      }
-    } catch (e) {
-      console.warn('Could not restore session', e);
-    }
-  }
-
   // Attempt to restore session on load
-  restoreSession();
-
-  /**
-   * Human readable file sizes
-   */
-  function formatBytes(bytes, decimals = 1) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  }
+  App.restoreSession();
 });
 
 </script>
