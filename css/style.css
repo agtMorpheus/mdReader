@@ -23,6 +23,9 @@ body {
 .font-serif {
   font-family: 'Libertinus Serif', serif;
 }
+.font-swiss {
+  font-family: 'Inter', sans-serif;
+}
 
 /* Hide helper class */
 .hidden {
@@ -284,6 +287,11 @@ body {
   align-items: center;
   padding: 0.75rem 1.5rem;
   background-color: var(--bg-card);
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    background-color: var(--bg-card-glass, var(--bg-card));
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+  }
   border-bottom: 1px solid var(--border-color);
   z-index: 10;
   box-shadow: var(--shadow-sm);
@@ -468,6 +476,8 @@ body {
   line-height: 1.6;
   font-size: 18px;
   transition: max-width 0.3s ease, font-size 0.3s ease, line-height 0.3s ease;
+  font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+  letter-spacing: -0.011em;
 }
 
 .markdown-body h1, .markdown-body h2, .markdown-body h3, 
@@ -482,7 +492,7 @@ body {
 .markdown-body h1 { font-size: 2.2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3rem; }
 .markdown-body h2 { font-size: 1.65rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3rem; }
 .markdown-body h3 { font-size: 1.35rem; }
-.markdown-body p { margin-bottom: 1.2rem; }
+.markdown-body p { margin-bottom: 1.5rem; }
 
 .markdown-body a {
   color: var(--primary);
@@ -647,6 +657,11 @@ body {
   width: 320px;
   height: 100%;
   background-color: var(--bg-card);
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    background-color: var(--bg-card-glass, var(--bg-card));
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+  }
   border-left: 1px solid var(--border-color);
   box-shadow: var(--shadow-lg);
   display: flex;
@@ -703,9 +718,18 @@ body {
 }
 
 /* Settings Toggle Buttons */
-.theme-buttons, .font-buttons, .layout-buttons {
+.theme-buttons, .layout-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  background-color: var(--bg-sidebar);
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+}
+
+.font-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 0.5rem;
   background-color: var(--bg-sidebar);
   padding: 0.25rem;

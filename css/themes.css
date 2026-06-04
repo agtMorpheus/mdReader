@@ -7,18 +7,19 @@
 
 /* Light Theme Variables */
 .theme-light {
-  --bg-app: hsl(210, 20%, 98%);
+  --bg-app: hsl(210, 20%, 99%);
   --bg-card: hsl(0, 0%, 100%);
+  --bg-card-glass: rgba(255, 255, 255, 0.85);
   --bg-sidebar: hsl(210, 20%, 96%);
   --border-color: hsl(214, 16%, 90%);
   
-  --text-main: hsl(215, 25%, 15%);
+  --text-main: #111111;
   --text-muted: hsl(215, 16%, 47%);
   --text-inverse: hsl(0, 0%, 100%);
   
-  --primary: hsl(255, 60%, 55%);
-  --primary-hover: hsl(255, 60%, 48%);
-  --primary-light: hsl(255, 60%, 94%);
+  --primary: #000000;
+  --primary-hover: #333333;
+  --primary-light: #e0e0e0;
   
   --accent: hsl(190, 70%, 45%);
   --accent-light: hsl(190, 70%, 95%);
@@ -34,18 +35,19 @@
 
 /* Dark Theme Variables */
 .theme-dark {
-  --bg-app: hsl(220, 25%, 10%);
-  --bg-card: hsl(220, 25%, 13%);
-  --bg-sidebar: hsl(220, 25%, 8%);
-  --border-color: hsl(220, 20%, 20%);
+  --bg-app: #0a0a0a;
+  --bg-card: #141414;
+  --bg-card-glass: rgba(20, 20, 20, 0.85);
+  --bg-sidebar: #0f0f0f;
+  --border-color: #2a2a2a;
   
-  --text-main: hsl(210, 20%, 90%);
-  --text-muted: hsl(215, 12%, 60%);
-  --text-inverse: hsl(220, 25%, 10%);
+  --text-main: #eeeeee;
+  --text-muted: #888888;
+  --text-inverse: #111111;
   
-  --primary: hsl(255, 75%, 70%);
-  --primary-hover: hsl(255, 75%, 76%);
-  --primary-light: hsl(255, 30%, 20%);
+  --primary: #ffffff;
+  --primary-hover: #cccccc;
+  --primary-light: #333333;
   
   --accent: hsl(190, 80%, 65%);
   --accent-light: hsl(190, 40%, 20%);
