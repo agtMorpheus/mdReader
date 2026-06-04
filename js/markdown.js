@@ -18,7 +18,7 @@
       if (typeof marked !== 'undefined') {
         marked.setOptions({
           gfm: true,
-          breaks: true
+          breaks: false
         });
         
         // Add KaTeX extension if available
