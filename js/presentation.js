@@ -62,7 +62,8 @@
     start() {
       if (this.slides.length === 0) {
         if (typeof window.showToast === 'function') {
-          window.showToast('Nenhum slide encontrado. Use `---` para separar slides no documento.', 'info');
+          const msg = window.Settings ? window.Settings.t('noSlidesFound') : 'Nenhum slide encontrado. Use `---` para separar slides no documento.';
+          window.showToast(msg, 'info');
         } else {
           // fallback before app.js is fully loaded
           console.warn('Presentation: no slides parsed from document.');

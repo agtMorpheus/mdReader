@@ -19,10 +19,15 @@
   flex-direction: column;
   z-index: 100;
   overflow-y: auto;
-  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 1.5rem;
+  visibility: hidden;
 }
-.settings-panel.open { right: 0; }
+.settings-panel.open {
+  right: 0;
+  visibility: visible;
+}
 
 .settings-header {
   display: flex;
@@ -56,7 +61,15 @@
 }
 
 /* Settings Toggle Buttons */
-.theme-buttons, .layout-buttons {
+.theme-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+  background-color: var(--bg-sidebar);
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+}
+.layout-buttons, .alignment-buttons, .lang-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
@@ -267,3 +280,15 @@
   transition: color 0.15s ease;
 }
 .toast-close:hover { color: var(--text-main); }
+
+/* Mobile View Overrides */
+@media (max-width: 768px) {
+  .font-buttons {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+  }
+  .settings-panel {
+    width: 100%;
+    right: -100%;
+  }
+}

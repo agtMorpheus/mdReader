@@ -148,14 +148,17 @@
 
         const copyBtn = document.createElement('button');
         copyBtn.className = 'btn-copy-code';
-        copyBtn.textContent = 'Copy';
+        const copyText = window.Settings ? window.Settings.t('copy') : 'Copy';
+        copyBtn.textContent = copyText;
         copyBtn.addEventListener('click', () => {
           navigator.clipboard.writeText(code.textContent).then(() => {
-            copyBtn.textContent = 'Copied!';
-            setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000);
+            const copiedText = window.Settings ? window.Settings.t('copied') : 'Copied!';
+            copyBtn.textContent = copiedText;
+            setTimeout(() => { copyBtn.textContent = copyText; }, 2000);
           }).catch(err => {
             console.error('Failed to copy text:', err);
-            copyBtn.textContent = 'Failed';
+            const failedText = window.Settings ? window.Settings.t('failed') : 'Failed';
+            copyBtn.textContent = failedText;
           });
         });
 

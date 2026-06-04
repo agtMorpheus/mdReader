@@ -13,8 +13,11 @@
     layout: 'single',
     fontSize: 18,
     lineHeight: 1.6,
-    maxWidth: 65
+    maxWidth: 65,
+    textAlign: 'left',
+    lang: navigator.language.startsWith('pt') ? 'pt' : 'en'
   };
+
 
   class SettingsManager {
     constructor() {
@@ -83,6 +86,8 @@
       this.applyFontSize(this.settings.fontSize);
       this.applyLineHeight(this.settings.lineHeight);
       this.applyMaxWidth(this.settings.maxWidth);
+      this.applyAlignment(this.settings.textAlign);
+      this.applyLanguage(this.settings.lang);
     }
 
     /**
@@ -93,6 +98,7 @@
       const target = document.getElementById('render-target');
       if (target) {
         target.classList.toggle('layout-two-columns', layout === 'columns');
+        this.applyMaxWidth(this.settings.maxWidth);
       }
     }
 
@@ -101,7 +107,7 @@
      */
     applyTheme(theme) {
       this.settings.theme = theme;
-      document.body.classList.remove('theme-light', 'theme-dark');
+      document.body.classList.remove('theme-light', 'theme-dark', 'theme-sepia');
       document.body.classList.add(`theme-${theme}`);
       
       // Update hljs theme stylesheets if present
@@ -167,12 +173,67 @@
       this.settings.maxWidth = parseInt(width, 10);
       const target = document.getElementById('render-target');
       if (target) {
-        target.style.maxWidth = `${this.settings.maxWidth}ch`;
+        if (this.settings.layout === 'columns') {
+          target.style.maxWidth = `calc(${this.settings.maxWidth * 2}ch + 6rem)`;
+        } else {
+          target.style.maxWidth = `${this.settings.maxWidth}ch`;
+        }
       }
       const valLabel = document.getElementById('val-max-width');
       if (valLabel) {
         valLabel.textContent = `${this.settings.maxWidth}ch`;
       }
+    }
+
+    /**
+     * Text Alignment adjustment (left or justify)
+     */
+    applyAlignment(align) {
+      this.settings.textAlign = align;
+      const target = document.getElementById('render-target');
+      if (target) {
+        target.classList.toggle('align-justify', align === 'justify');
+      }
+    }
+
+    /**
+     * Language selection (pt or en) and DOM translations
+     */
+    applyLanguage(lang) {
+      this.settings.lang = lang;
+      const dict = (window.Translations && (window.Translations[lang] || window.Translations['en'])) || {};
+      
+      // Translate elements with data-i18n
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (dict[key]) el.textContent = dict[key];
+      });
+
+      // Translate attributes with data-i18n-placeholder
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.dataset.i18nPlaceholder;
+        if (dict[key]) el.placeholder = dict[key];
+      });
+
+      // Translate attributes with data-i18n-title
+      document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.dataset.i18nTitle;
+        if (dict[key]) el.title = dict[key];
+      });
+
+      // Translate attributes with data-i18n-aria-label
+      document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+        const key = el.dataset.i18nAriaLabel;
+        if (dict[key]) el.setAttribute('aria-label', dict[key]);
+      });
+      
+      document.title = lang === 'pt' ? 'mdReader - Visualizador de Markdown livre de distrações' : 'mdReader - Distraction-Free Markdown Viewer';
+    }
+
+    t(key) {
+      const lang = this.settings.lang || 'en';
+      const trans = window.Translations || {};
+      return (trans[lang] && trans[lang][key]) || (trans['en'] && trans['en'][key]) || key;
     }
 
     set(key, value) {
@@ -185,6 +246,8 @@
           case 'fontSize': this.applyFontSize(value); break;
           case 'lineHeight': this.applyLineHeight(value); break;
           case 'maxWidth': this.applyMaxWidth(value); break;
+          case 'textAlign': this.applyAlignment(value); break;
+          case 'lang': this.applyLanguage(value); break;
         }
         this.save();
       }

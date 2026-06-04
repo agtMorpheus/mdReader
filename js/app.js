@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeBtns = document.querySelectorAll('[data-theme]'),
         fontBtns = document.querySelectorAll('[data-font]'),
         layoutBtns = document.querySelectorAll('[data-layout]'),
+        alignmentBtns = document.querySelectorAll('[data-align]'),
+        langBtns = document.querySelectorAll('[data-lang]'),
         fontSizeRange = document.getElementById('setting-font-size'),
         lineHeightRange = document.getElementById('setting-line-height'),
         maxWidthRange = document.getElementById('setting-max-width');
@@ -80,6 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
     themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === s.theme));
     fontBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.font === s.font));
     if (layoutBtns) layoutBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.layout === s.layout));
+    if (alignmentBtns) alignmentBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.align === s.textAlign));
+    if (langBtns) langBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === s.lang));
     if (fontSizeRange) fontSizeRange.value = s.fontSize;
     if (lineHeightRange) lineHeightRange.value = s.lineHeight;
     if (maxWidthRange) maxWidthRange.value = s.maxWidth;
@@ -130,6 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
         themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === s.theme));
         fontBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.font === s.font));
         if (layoutBtns) layoutBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.layout === s.layout));
+        if (alignmentBtns) alignmentBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.align === s.textAlign));
+        if (langBtns) langBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === s.lang));
         if (fontSizeRange) fontSizeRange.value = s.fontSize;
         if (lineHeightRange) lineHeightRange.value = s.lineHeight;
         if (maxWidthRange) maxWidthRange.value = s.maxWidth;
@@ -152,6 +158,20 @@ document.addEventListener('DOMContentLoaded', () => {
     layoutBtns.forEach(btn => btn.addEventListener('click', () => {
       if (window.Settings) window.Settings.set('layout', btn.dataset.layout);
       layoutBtns.forEach(b => b.classList.toggle('active', b === btn));
+    }));
+  }
+
+  if (alignmentBtns) {
+    alignmentBtns.forEach(btn => btn.addEventListener('click', () => {
+      if (window.Settings) window.Settings.set('textAlign', btn.dataset.align);
+      alignmentBtns.forEach(b => b.classList.toggle('active', b === btn));
+    }));
+  }
+
+  if (langBtns) {
+    langBtns.forEach(btn => btn.addEventListener('click', () => {
+      if (window.Settings) window.Settings.set('lang', btn.dataset.lang);
+      langBtns.forEach(b => b.classList.toggle('active', b === btn));
     }));
   }
 
@@ -203,7 +223,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const isZen = readerLayout.classList.toggle('zen-mode-active');
       if (isZen) {
         if (tocDrawer.isOpen) tocDrawer.close();
-        if (window.showToast) window.showToast('Modo Zen Ativado (Pressione Z para sair)', 'info', 2000);
+        if (window.showToast) {
+          const msg = window.Settings ? window.Settings.t('zenModeActive') : 'Modo Zen Ativado (Pressione Z para sair)';
+          window.showToast(msg, 'info', 2000);
+        }
       }
     }
 

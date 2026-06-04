@@ -189,9 +189,11 @@
       } else {
         controls.classList.remove('hidden');
         if (this.matches.length === 0) {
-          counter.textContent = '0 de 0';
+          const separator = window.Settings ? window.Settings.t('searchCounter') : 'de';
+          counter.textContent = `0 ${separator} 0`;
         } else {
-          counter.textContent = `${this.currentIndex + 1} de ${this.matches.length}`;
+          const separator = window.Settings ? window.Settings.t('searchCounter') : 'de';
+          counter.textContent = `${this.currentIndex + 1} ${separator} ${this.matches.length}`;
         }
       }
     }

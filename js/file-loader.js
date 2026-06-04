@@ -98,7 +98,8 @@
     const name = file.name.toLowerCase();
     if (!name.endsWith('.md') && !name.endsWith('.markdown') && !name.endsWith('.txt')) {
       if (window.showToast) {
-        window.showToast('Formato inválido: selecione um arquivo Markdown (.md, .markdown) ou texto simples (.txt).', 'error');
+        const msg = window.Settings ? window.Settings.t('invalidFormat') : 'Formato inválido: selecione um arquivo Markdown (.md, .markdown) ou texto simples (.txt).';
+        window.showToast(msg, 'error');
       }
       return;
     }
@@ -124,7 +125,9 @@
           if (displayFileName) displayFileName.textContent = file.name;
           const readingTime = calculateReadingTime(text);
           if (displayFileSize) {
-            displayFileSize.textContent = `${formatBytes(file.size)} • Est. ${readingTime} min de leitura`;
+            const estPattern = window.Settings ? window.Settings.t('estReadingTime') : 'Est. {time} min de leitura';
+            const estString = estPattern.replace('{time}', readingTime);
+            displayFileSize.textContent = `${formatBytes(file.size)} • ${estString}`;
           }
 
           const readingCanvas = document.getElementById('reading-canvas');
@@ -134,7 +137,8 @@
         .catch(err => {
           console.error(err);
           if (window.showToast) {
-            window.showToast('Erro ao carregar o arquivo: ' + err.message, 'error');
+            const errorMsg = window.Settings ? window.Settings.t('errorLoadingFile') : 'Erro ao carregar o arquivo: ';
+            window.showToast(errorMsg + err.message, 'error');
           }
         });
     }
@@ -165,7 +169,10 @@
           if (readerLayout) readerLayout.classList.remove('hidden');
 
           if (displayFileName) displayFileName.textContent = state.currentFile.name;
-          if (displayFileSize) displayFileSize.textContent = 'Sessão restaurada';
+          if (displayFileSize) {
+            const sessionMsg = window.Settings ? window.Settings.t('sessionRestored') : 'Sessão restaurada';
+            displayFileSize.textContent = sessionMsg;
+          }
 
           setTimeout(() => {
             if (sessionData.scroll && readingCanvas) {

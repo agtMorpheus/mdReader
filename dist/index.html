@@ -79,6 +79,35 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
 }
 
+/* Sepia Theme Variables */
+.theme-sepia {
+  --bg-app: hsl(38, 40%, 94%);
+  --bg-card: hsl(38, 50%, 97%);
+  --bg-card-glass: rgba(253, 249, 239, 0.85);
+  --bg-sidebar: hsl(38, 30%, 89%);
+  --border-color: hsl(38, 20%, 83%);
+  
+  --text-main: hsl(38, 70%, 12%);
+  --text-muted: hsl(38, 20%, 40%);
+  --text-inverse: hsl(38, 50%, 97%);
+  
+  --primary: hsl(38, 60%, 25%);
+  --primary-hover: hsl(38, 60%, 18%) ;
+  --primary-light: hsl(38, 30%, 85%);
+  
+  --accent: hsl(20, 80%, 40%);
+  --accent-light: hsl(20, 30%, 92%);
+  
+  --search-match: hsl(45, 100%, 75%);
+  --search-current: hsl(30, 100%, 60%);
+  
+  --code-bg: hsl(38, 25%, 88%);
+  --shadow-sm: 0 1px 3px rgba(80, 60, 40, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(80, 60, 40, 0.05), 0 2px 4px -1px rgba(80, 60, 40, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(80, 60, 40, 0.05), 0 4px 6px -2px rgba(80, 60, 40, 0.03);
+}
+
+
 </style>
   <style>
 /* Inlined css/base.css */
@@ -363,12 +392,15 @@ body {
   flex-direction: column;
   height: 100vh;
   position: relative;
+  overflow: hidden;
 }
 
 .reader-layout {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
 
 .reader-header {
@@ -386,6 +418,18 @@ body {
   z-index: 10;
   box-shadow: var(--shadow-sm);
   transition: var(--theme-transition);
+  position: relative;
+}
+
+#reading-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background-color: var(--primary);
+  width: 0%;
+  z-index: 11;
+  transition: width 0.15s ease-out;
 }
 
 .header-left, .header-right {
@@ -517,6 +561,15 @@ body {
   padding: 0.25rem 0.75rem;
   width: 220px;
   transition: width 0.3s ease, border-color 0.2s ease;
+  gap: 0.5rem;
+  overflow: hidden;
+}
+
+.search-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
 .search-container:focus-within {
@@ -565,56 +618,114 @@ body {
   .mobile-only {
     display: flex;
   }
+  .desktop-only {
+    display: none !important;
+  }
   .toc-sidebar {
     position: absolute;
     top: 0;
     left: -280px;
     height: 100%;
     z-index: 100;
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: var(--shadow-lg);
+    visibility: hidden;
   }
   .toc-sidebar.open {
     left: 0;
+    visibility: visible;
   }
   .reader-header {
-    flex-wrap: wrap;
-    padding: 0.5rem 1rem;
-    gap: 0.5rem;
+    flex-wrap: nowrap;
+    padding: 0.5rem 0.75rem;
+    gap: 0.35rem;
+    align-items: center;
   }
   .header-left, .header-right {
-    width: 100%;
-    justify-content: space-between;
-  }
-  .search-container {
-    flex: 1;
-    margin-right: 0.5rem;
-  }
-  .search-container:focus-within {
     width: auto;
-  }
-  #btn-presentation {
-    padding: 0.5rem;
+    gap: 0.35rem;
+    flex-shrink: 1;
     min-width: 0;
   }
-  #btn-presentation .slides-label {
-    display: none;
+  .header-right {
+    justify-content: flex-end;
+  }
+  .file-info {
+    min-width: 0;
+    transition: opacity 0.2s ease, width 0.2s ease;
+  }
+  .reader-header:has(.search-container:focus-within) .file-info {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+  }
+  .file-name {
+    max-width: 120px;
+  }
+  .search-container {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 50%;
+    border-color: transparent;
+    background-color: transparent;
+    justify-content: center;
+    gap: 0;
+    margin-right: 0;
+    flex-shrink: 0;
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), padding 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+  }
+  .search-container input {
+    width: 0;
+    opacity: 0;
+    padding: 0;
+    transition: width 0.25s ease, opacity 0.25s ease;
+  }
+  .search-container:focus-within {
+    width: 200px;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    border-color: var(--border-color);
+    background-color: var(--bg-sidebar);
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+  .search-container:focus-within input {
+    width: 100%;
+    opacity: 1;
+  }
+  .btn-icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+  }
+  .btn-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+  #btn-presentation {
+    display: none !important;
   }
   .file-size {
     display: none;
   }
   .reading-canvas {
-    padding: 1.5rem 1rem;
-  }
-  .settings-panel {
-    width: 100%;
-    right: -100%;
+    padding: 0 1.75rem 2rem;
   }
   .drop-card {
     padding: 2rem 1rem;
   }
   .markdown-body {
+    margin-top: 1.5rem;
     font-size: 16px;
+    line-height: 1.7;
+  }
+  .markdown-body p {
+    margin-bottom: 1.2rem;
   }
   .markdown-body h1 { font-size: 1.8rem; }
   .markdown-body h2 { font-size: 1.5rem; }
@@ -629,30 +740,28 @@ body {
 .reading-canvas {
   flex: 1;
   overflow-y: auto;
-  padding: 3rem 2rem;
+  padding: 0 2rem 3rem;
   scroll-behavior: smooth;
   position: relative;
 }
 
-#reading-progress {
-  position: sticky;
-  top: 0;
-  left: 0;
-  height: 2px;
-  background-color: var(--primary);
-  width: 0%;
-  z-index: 1000;
-  transition: width 0.1s ease-out;
-}
-
 .markdown-body {
-  margin: 0 auto;
+  margin: 3rem auto 0;
   max-width: 800px;
   line-height: 1.6;
   font-size: 18px;
   transition: max-width 0.3s ease, font-size 0.3s ease, line-height 0.3s ease;
   font-feature-settings: "cv02", "cv03", "cv04", "ss01";
   letter-spacing: -0.011em;
+}
+
+.markdown-body.align-justify {
+  text-align: justify;
+  text-justify: inter-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
 }
 
 .markdown-body h1, .markdown-body h2, .markdown-body h3, 
@@ -712,7 +821,7 @@ body {
 @media (min-width: 1024px) {
   .markdown-body.layout-two-columns {
     column-count: 2;
-    column-gap: 4rem;
+    column-gap: 6rem;
     column-rule: 1px solid var(--border-color);
   }
   
@@ -830,10 +939,15 @@ body {
   flex-direction: column;
   z-index: 100;
   overflow-y: auto;
-  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 1.5rem;
+  visibility: hidden;
 }
-.settings-panel.open { right: 0; }
+.settings-panel.open {
+  right: 0;
+  visibility: visible;
+}
 
 .settings-header {
   display: flex;
@@ -867,7 +981,15 @@ body {
 }
 
 /* Settings Toggle Buttons */
-.theme-buttons, .layout-buttons {
+.theme-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+  background-color: var(--bg-sidebar);
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+}
+.layout-buttons, .alignment-buttons, .lang-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
@@ -1079,6 +1201,18 @@ body {
 }
 .toast-close:hover { color: var(--text-main); }
 
+/* Mobile View Overrides */
+@media (max-width: 768px) {
+  .font-buttons {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+  }
+  .settings-panel {
+    width: 100%;
+    right: -100%;
+  }
+}
+
 </style>
   <style media="print">
 /* Inlined css/print.css */
@@ -1191,10 +1325,10 @@ body {
             <polyline points="9 15 12 12 15 15"/>
           </svg>
         </div>
-        <h2>Carregar Documento Markdown</h2>
-        <p>Arraste o arquivo aqui ou clique para selecionar</p>
+        <h2 data-i18n="landingTitle">Carregar Documento Markdown</h2>
+        <p data-i18n="landingDesc">Arraste o arquivo aqui ou clique para selecionar</p>
         <input type="file" id="file-input" accept=".md,.markdown,.txt" class="hidden-input">
-        <button class="btn btn-primary" id="browse-btn">Selecionar Arquivo</button>
+        <button class="btn btn-primary" id="browse-btn" data-i18n="selectFile">Selecionar Arquivo</button>
       </div>
     </section>
 
@@ -1203,14 +1337,14 @@ body {
       <!-- Top Navbar / Controls -->
       <header class="reader-header">
         <div class="header-left">
-          <button class="btn-icon" id="btn-back-landing" title="Load another file" aria-label="Load another file">
+          <button class="btn-icon" id="btn-back-landing" title="Load another file" aria-label="Load another file" data-i18n-title="backLandingTitle">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
           </button>
           <button class="btn-icon mobile-only" id="btn-toggle-toc" title="Table of Contents"
-            aria-label="Toggle table of contents" aria-expanded="false" aria-controls="toc-sidebar">
+            aria-label="Toggle table of contents" aria-expanded="false" aria-controls="toc-sidebar" data-i18n-title="toggleTocTitle">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="3" y1="12" x2="21" y2="12"></line>
               <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -1225,33 +1359,38 @@ body {
 
         <div class="header-right">
           <!-- Search Bar -->
-          <div class="search-container">
-            <input type="text" id="search-input" placeholder="Buscar no documento..." aria-label="Buscar">
+          <label class="search-container" for="search-input">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="search-input" placeholder="Buscar no documento..." aria-label="Buscar" data-i18n-placeholder="searchPlaceholder">
             <div class="search-controls hidden" id="search-controls">
               <span class="search-counter" id="search-counter">0 de 0</span>
-              <button class="btn-icon-small" id="search-prev" title="Resultado anterior" aria-label="Resultado anterior">▲</button>
-              <button class="btn-icon-small" id="search-next" title="Próximo resultado" aria-label="Próximo resultado">▼</button>
+              <button class="btn-icon-small" id="search-prev" title="Resultado anterior" aria-label="Resultado anterior" data-i18n-title="searchPrevTitle">▲</button>
+              <button class="btn-icon-small" id="search-next" title="Próximo resultado" aria-label="Próximo resultado" data-i18n-title="searchNextTitle">▼</button>
             </div>
-          </div>
+          </label>
 
           <!-- Utility Options -->
-          <button class="btn btn-secondary" id="btn-presentation" title="Modo de Apresentação" aria-label="Modo de apresentação">
+          <button class="btn btn-secondary desktop-only" id="btn-presentation" title="Modo de Apresentação" aria-label="Modo de apresentação" data-i18n-title="presentationTitle">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
               <line x1="8" y1="21" x2="16" y2="21"/>
               <line x1="12" y1="17" x2="12" y2="21"/>
             </svg>
-            <span class="slides-label">Slides</span>
+            <span class="slides-label" data-i18n="slides">Slides</span>
           </button>
 
           <button class="btn-icon" id="btn-toggle-settings" title="Settings"
-            aria-label="Open appearance settings" aria-expanded="false" aria-controls="settings-panel">
+            aria-label="Open appearance settings" aria-expanded="false" aria-controls="settings-panel" data-i18n-title="settingsTooltip">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="3"/>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
             </svg>
           </button>
         </div>
+        <div id="reading-progress"></div>
       </header>
 
       <!-- Main Columns -->
@@ -1259,18 +1398,17 @@ body {
         <!-- Sidebar Navigation (Table of Contents) -->
         <aside class="toc-sidebar" id="toc-sidebar">
           <div class="toc-header">
-            <h3>Índice</h3>
-            <button class="btn-close mobile-only" id="btn-close-toc" aria-label="Fechar índice">&times;</button>
+            <h3 data-i18n="tocTitle">Índice</h3>
+            <button class="btn-close mobile-only" id="btn-close-toc" aria-label="Fechar índice" data-i18n-aria-label="closeToc">&times;</button>
           </div>
           <nav class="toc-nav" id="toc-nav-container">
             <!-- Links gerados dinamicamente -->
-            <p class="toc-empty">Sem títulos encontrados</p>
+            <p class="toc-empty" data-i18n="tocEmpty">Sem títulos encontrados</p>
           </nav>
         </aside>
 
         <!-- Reading Canvas -->
         <div class="reading-canvas" id="reading-canvas">
-          <div id="reading-progress"></div>
           <article class="markdown-body font-serif" id="render-target">
             <!-- Rendered Markdown goes here -->
           </article>
@@ -1280,20 +1418,21 @@ body {
       <!-- Settings Sidebar Panel -->
       <aside class="settings-panel" id="settings-panel">
         <div class="settings-header">
-          <h3>Configurações de Aparência</h3>
-          <button class="btn-close" id="btn-close-settings" aria-label="Fechar configurações">&times;</button>
+          <h3 data-i18n="settingsTitle">Configurações de Aparência</h3>
+          <button class="btn-close" id="btn-close-settings" aria-label="Fechar configurações" data-i18n-aria-label="closeSettings">&times;</button>
         </div>
         
         <div class="settings-group">
-          <label>Tema</label>
+          <label data-i18n="themeLabel">Tema</label>
           <div class="theme-buttons">
-            <button class="btn-toggle active" data-theme="light">Claro</button>
-            <button class="btn-toggle" data-theme="dark">Escuro</button>
+            <button class="btn-toggle active" data-theme="light" data-i18n="themeLight">Claro</button>
+            <button class="btn-toggle" data-theme="sepia" data-i18n="themeSepia">Sepia</button>
+            <button class="btn-toggle" data-theme="dark" data-i18n="themeDark">Escuro</button>
           </div>
         </div>
 
         <div class="settings-group">
-          <label>Fonte</label>
+          <label data-i18n="fontLabel">Fonte</label>
           <div class="font-buttons">
             <button class="btn-toggle" data-font="sans">Outfit</button>
             <button class="btn-toggle active" data-font="serif">Libertinus</button>
@@ -1302,16 +1441,32 @@ body {
           </div>
         </div>
 
-        <div class="settings-group">
-          <label>Layout</label>
+        <div class="settings-group desktop-only">
+          <label data-i18n="layoutLabel">Layout</label>
           <div class="layout-buttons">
-            <button class="btn-toggle active" data-layout="single">Coluna Única</button>
-            <button class="btn-toggle" data-layout="columns">Duas Colunas</button>
+            <button class="btn-toggle active" data-layout="single" data-i18n="layoutSingle">Coluna Única</button>
+            <button class="btn-toggle" data-layout="columns" data-i18n="layoutColumns">Duas Colunas</button>
           </div>
         </div>
 
         <div class="settings-group">
-          <label>Tamanho da Fonte</label>
+          <label data-i18n="alignmentLabel">Alinhamento do Texto</label>
+          <div class="alignment-buttons">
+            <button class="btn-toggle active" data-align="left" data-i18n="alignLeft">Esquerda</button>
+            <button class="btn-toggle" data-align="justify" data-i18n="alignJustify">Justificado</button>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label data-i18n="langLabel">Idioma / Language</label>
+          <div class="lang-buttons">
+            <button class="btn-toggle active" data-lang="pt">Português</button>
+            <button class="btn-toggle" data-lang="en">English</button>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label data-i18n="fontSizeLabel">Tamanho da Fonte</label>
           <div class="range-control">
             <input type="range" id="setting-font-size" min="14" max="24" value="18">
             <span class="range-val" id="val-font-size">18px</span>
@@ -1319,7 +1474,7 @@ body {
         </div>
 
         <div class="settings-group">
-          <label>Espaçamento de Linha</label>
+          <label data-i18n="lineHeightLabel">Espaçamento de Linha</label>
           <div class="range-control">
             <input type="range" id="setting-line-height" min="1.4" max="2.0" step="0.1" value="1.6">
             <span class="range-val" id="val-line-height">1.6</span>
@@ -1327,7 +1482,7 @@ body {
         </div>
 
         <div class="settings-group">
-          <label>Largura Máxima</label>
+          <label data-i18n="maxWidthLabel">Largura Máxima</label>
           <div class="range-control">
             <input type="range" id="setting-max-width" min="45" max="75" step="1" value="65">
             <span class="range-val" id="val-max-width">65ch</span>
@@ -1335,14 +1490,14 @@ body {
         </div>
 
         <div class="settings-group border-top">
-          <button class="btn btn-secondary w-full" id="btn-reset-settings" style="color: var(--text-muted); border-color: transparent;">↺ Restaurar Padrões</button>
+          <button class="btn btn-secondary w-full" id="btn-reset-settings" style="color: var(--text-muted); border-color: transparent;" data-i18n="restoreDefaults">↺ Restaurar Padrões</button>
         </div>
 
         <div class="settings-group border-top">
-          <label>Exportar</label>
+          <label data-i18n="exportLabel">Exportar</label>
           <div class="export-actions">
-            <button class="btn btn-secondary w-full" id="btn-export-html">Exportar como HTML</button>
-            <button class="btn btn-secondary w-full" id="btn-export-pdf">Imprimir / Exportar PDF</button>
+            <button class="btn btn-secondary w-full" id="btn-export-html" data-i18n="exportHtml">Exportar como HTML</button>
+            <button class="btn btn-secondary w-full" id="btn-export-pdf" data-i18n="exportPdf">Imprimir / Exportar PDF</button>
           </div>
         </div>
       </aside>
@@ -1352,20 +1507,133 @@ body {
     <section id="presentation-mode" class="presentation-mode hidden">
       <header class="presentation-header">
         <span class="slide-title" id="slide-title">Presentation Title</span>
-        <button class="btn-close-presentation" id="btn-close-presentation" title="Exit Presentation Mode" aria-label="Exit presentation mode">&times;</button>
+        <button class="btn-close-presentation" id="btn-close-presentation" title="Exit Presentation Mode" aria-label="Exit presentation mode" data-i18n-title="exitPresentation" data-i18n-aria-label="exitPresentation">&times;</button>
       </header>
       <div class="slide-container" id="slide-container">
         <!-- Dynamic active slide content -->
       </div>
       <footer class="presentation-footer">
-        <button class="btn-slide-nav" id="slide-prev" aria-label="Slide anterior">◀ Anterior</button>
+        <button class="btn-slide-nav" id="slide-prev" aria-label="Slide anterior" data-i18n="prevSlide" data-i18n-aria-label="prevSlide">◀ Anterior</button>
         <span class="slide-counter" id="slide-counter" aria-live="polite" aria-atomic="true">1 / 1</span>
-        <button class="btn-slide-nav" id="slide-next" aria-label="Próximo slide">Próximo ▶</button>
+        <button class="btn-slide-nav" id="slide-next" aria-label="Próximo slide" data-i18n="nextSlide" data-i18n-aria-label="nextSlide">Próximo ▶</button>
       </footer>
     </section>
   </div>
 
   <!-- Scripts -->
+  <script>
+/* Inlined js/translations.js */
+/**
+ * mdReader - translations.js
+ * Contains localized text mappings for multi-language support (Portuguese and English).
+ */
+
+(function () {
+  window.Translations = {
+    pt: {
+      landingTitle: "Carregar Documento Markdown",
+      landingDesc: "Arraste o arquivo aqui ou clique para selecionar",
+      selectFile: "Selecionar Arquivo",
+      searchPlaceholder: "Buscar no documento...",
+      searchCounter: "de",
+      slides: "Slides",
+      tocTitle: "Índice",
+      tocEmpty: "Sem títulos encontrados",
+      settingsTitle: "Configurações de Aparência",
+      themeLabel: "Tema",
+      themeLight: "Claro",
+      themeSepia: "Sepia",
+      themeDark: "Escuro",
+      fontLabel: "Fonte",
+      layoutLabel: "Layout",
+      layoutSingle: "Coluna Única",
+      layoutColumns: "Duas Colunas",
+      alignmentLabel: "Alinhamento do Texto",
+      alignLeft: "Esquerda",
+      alignJustify: "Justificado",
+      fontSizeLabel: "Tamanho da Fonte",
+      lineHeightLabel: "Espaçamento de Linha",
+      maxWidthLabel: "Largura Máxima",
+      restoreDefaults: "↺ Restaurar Padrões",
+      exportLabel: "Exportar",
+      exportHtml: "Exportar como HTML",
+      exportPdf: "Imprimir / Exportar PDF",
+      langLabel: "Idioma / Language",
+      backLandingTitle: "Carregar outro arquivo",
+      toggleTocTitle: "Tabela de Conteúdo / Índice",
+      presentationTitle: "Modo de Apresentação",
+      settingsTooltip: "Configurações de aparência",
+      closeSettings: "Fechar configurações",
+      closeToc: "Fechar índice",
+      searchPrevTitle: "Resultado anterior",
+      searchNextTitle: "Próximo resultado",
+      exitPresentation: "Sair do modo de apresentação",
+      prevSlide: "Slide anterior",
+      nextSlide: "Próximo slide",
+      noSlidesFound: "Nenhum slide encontrado. Use `---` para separar slides no documento.",
+      invalidFormat: "Formato inválido: selecione um arquivo Markdown (.md, .markdown) ou texto simples (.txt).",
+      errorLoadingFile: "Erro ao carregar o arquivo: ",
+      zenModeActive: "Modo Zen Ativado (Pressione Z para sair)",
+      copy: "Copiar",
+      copied: "Copiado!",
+      failed: "Falhou",
+      estReadingTime: "Est. {time} min de leitura",
+      sessionRestored: "Sessão restaurada"
+    },
+    en: {
+      landingTitle: "Load Markdown Document",
+      landingDesc: "Drag file here or click to select",
+      selectFile: "Select File",
+      searchPlaceholder: "Search document...",
+      searchCounter: "of",
+      slides: "Slides",
+      tocTitle: "Table of Contents",
+      tocEmpty: "No headings found",
+      settingsTitle: "Appearance Settings",
+      themeLabel: "Theme",
+      themeLight: "Light",
+      themeSepia: "Sepia",
+      themeDark: "Dark",
+      fontLabel: "Font",
+      layoutLabel: "Layout",
+      layoutSingle: "Single Column",
+      layoutColumns: "Two Columns",
+      alignmentLabel: "Text Alignment",
+      alignLeft: "Left",
+      alignJustify: "Justified",
+      fontSizeLabel: "Font Size",
+      lineHeightLabel: "Line Height",
+      maxWidthLabel: "Max Width",
+      restoreDefaults: "↺ Restore Defaults",
+      exportLabel: "Export",
+      exportHtml: "Export as HTML",
+      exportPdf: "Print / Export PDF",
+      langLabel: "Language / Idioma",
+      backLandingTitle: "Load another file",
+      toggleTocTitle: "Table of Contents",
+      presentationTitle: "Presentation Mode",
+      settingsTooltip: "Appearance settings",
+      closeSettings: "Close settings",
+      closeToc: "Close table of contents",
+      searchPrevTitle: "Previous result",
+      searchNextTitle: "Next result",
+      exitPresentation: "Exit presentation mode",
+      prevSlide: "Previous slide",
+      nextSlide: "Next slide",
+      noSlidesFound: "No slides found. Use `---` to separate slides in the document.",
+      invalidFormat: "Invalid format: select a Markdown (.md, .markdown) or plain text (.txt) file.",
+      errorLoadingFile: "Error loading file: ",
+      zenModeActive: "Zen Mode Activated (Press Z to exit)",
+      copy: "Copy",
+      copied: "Copied!",
+      failed: "Failed",
+      estReadingTime: "Est. {time} min read",
+      sessionRestored: "Session restored"
+    }
+  };
+})();
+
+</script>
   <script>
 /* Inlined js/settings.js */
 /**
@@ -1383,8 +1651,11 @@ body {
     layout: 'single',
     fontSize: 18,
     lineHeight: 1.6,
-    maxWidth: 65
+    maxWidth: 65,
+    textAlign: 'left',
+    lang: navigator.language.startsWith('pt') ? 'pt' : 'en'
   };
+
 
   class SettingsManager {
     constructor() {
@@ -1453,6 +1724,8 @@ body {
       this.applyFontSize(this.settings.fontSize);
       this.applyLineHeight(this.settings.lineHeight);
       this.applyMaxWidth(this.settings.maxWidth);
+      this.applyAlignment(this.settings.textAlign);
+      this.applyLanguage(this.settings.lang);
     }
 
     /**
@@ -1463,6 +1736,7 @@ body {
       const target = document.getElementById('render-target');
       if (target) {
         target.classList.toggle('layout-two-columns', layout === 'columns');
+        this.applyMaxWidth(this.settings.maxWidth);
       }
     }
 
@@ -1471,7 +1745,7 @@ body {
      */
     applyTheme(theme) {
       this.settings.theme = theme;
-      document.body.classList.remove('theme-light', 'theme-dark');
+      document.body.classList.remove('theme-light', 'theme-dark', 'theme-sepia');
       document.body.classList.add(`theme-${theme}`);
       
       // Update hljs theme stylesheets if present
@@ -1537,12 +1811,67 @@ body {
       this.settings.maxWidth = parseInt(width, 10);
       const target = document.getElementById('render-target');
       if (target) {
-        target.style.maxWidth = `${this.settings.maxWidth}ch`;
+        if (this.settings.layout === 'columns') {
+          target.style.maxWidth = `calc(${this.settings.maxWidth * 2}ch + 6rem)`;
+        } else {
+          target.style.maxWidth = `${this.settings.maxWidth}ch`;
+        }
       }
       const valLabel = document.getElementById('val-max-width');
       if (valLabel) {
         valLabel.textContent = `${this.settings.maxWidth}ch`;
       }
+    }
+
+    /**
+     * Text Alignment adjustment (left or justify)
+     */
+    applyAlignment(align) {
+      this.settings.textAlign = align;
+      const target = document.getElementById('render-target');
+      if (target) {
+        target.classList.toggle('align-justify', align === 'justify');
+      }
+    }
+
+    /**
+     * Language selection (pt or en) and DOM translations
+     */
+    applyLanguage(lang) {
+      this.settings.lang = lang;
+      const dict = (window.Translations && (window.Translations[lang] || window.Translations['en'])) || {};
+      
+      // Translate elements with data-i18n
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (dict[key]) el.textContent = dict[key];
+      });
+
+      // Translate attributes with data-i18n-placeholder
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.dataset.i18nPlaceholder;
+        if (dict[key]) el.placeholder = dict[key];
+      });
+
+      // Translate attributes with data-i18n-title
+      document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.dataset.i18nTitle;
+        if (dict[key]) el.title = dict[key];
+      });
+
+      // Translate attributes with data-i18n-aria-label
+      document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+        const key = el.dataset.i18nAriaLabel;
+        if (dict[key]) el.setAttribute('aria-label', dict[key]);
+      });
+      
+      document.title = lang === 'pt' ? 'mdReader - Visualizador de Markdown livre de distrações' : 'mdReader - Distraction-Free Markdown Viewer';
+    }
+
+    t(key) {
+      const lang = this.settings.lang || 'en';
+      const trans = window.Translations || {};
+      return (trans[lang] && trans[lang][key]) || (trans['en'] && trans['en'][key]) || key;
     }
 
     set(key, value) {
@@ -1555,6 +1884,8 @@ body {
           case 'fontSize': this.applyFontSize(value); break;
           case 'lineHeight': this.applyLineHeight(value); break;
           case 'maxWidth': this.applyMaxWidth(value); break;
+          case 'textAlign': this.applyAlignment(value); break;
+          case 'lang': this.applyLanguage(value); break;
         }
         this.save();
       }
@@ -1718,14 +2049,17 @@ body {
 
         const copyBtn = document.createElement('button');
         copyBtn.className = 'btn-copy-code';
-        copyBtn.textContent = 'Copy';
+        const copyText = window.Settings ? window.Settings.t('copy') : 'Copy';
+        copyBtn.textContent = copyText;
         copyBtn.addEventListener('click', () => {
           navigator.clipboard.writeText(code.textContent).then(() => {
-            copyBtn.textContent = 'Copied!';
-            setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000);
+            const copiedText = window.Settings ? window.Settings.t('copied') : 'Copied!';
+            copyBtn.textContent = copiedText;
+            setTimeout(() => { copyBtn.textContent = copyText; }, 2000);
           }).catch(err => {
             console.error('Failed to copy text:', err);
-            copyBtn.textContent = 'Failed';
+            const failedText = window.Settings ? window.Settings.t('failed') : 'Failed';
+            copyBtn.textContent = failedText;
           });
         });
 
@@ -2163,9 +2497,11 @@ body {
       } else {
         controls.classList.remove('hidden');
         if (this.matches.length === 0) {
-          counter.textContent = '0 de 0';
+          const separator = window.Settings ? window.Settings.t('searchCounter') : 'de';
+          counter.textContent = `0 ${separator} 0`;
         } else {
-          counter.textContent = `${this.currentIndex + 1} de ${this.matches.length}`;
+          const separator = window.Settings ? window.Settings.t('searchCounter') : 'de';
+          counter.textContent = `${this.currentIndex + 1} ${separator} ${this.matches.length}`;
         }
       }
     }
@@ -2405,7 +2741,8 @@ body {
     start() {
       if (this.slides.length === 0) {
         if (typeof window.showToast === 'function') {
-          window.showToast('Nenhum slide encontrado. Use `---` para separar slides no documento.', 'info');
+          const msg = window.Settings ? window.Settings.t('noSlidesFound') : 'Nenhum slide encontrado. Use `---` para separar slides no documento.';
+          window.showToast(msg, 'info');
         } else {
           // fallback before app.js is fully loaded
           console.warn('Presentation: no slides parsed from document.');
@@ -2769,7 +3106,8 @@ body {
     const name = file.name.toLowerCase();
     if (!name.endsWith('.md') && !name.endsWith('.markdown') && !name.endsWith('.txt')) {
       if (window.showToast) {
-        window.showToast('Formato inválido: selecione um arquivo Markdown (.md, .markdown) ou texto simples (.txt).', 'error');
+        const msg = window.Settings ? window.Settings.t('invalidFormat') : 'Formato inválido: selecione um arquivo Markdown (.md, .markdown) ou texto simples (.txt).';
+        window.showToast(msg, 'error');
       }
       return;
     }
@@ -2795,7 +3133,9 @@ body {
           if (displayFileName) displayFileName.textContent = file.name;
           const readingTime = calculateReadingTime(text);
           if (displayFileSize) {
-            displayFileSize.textContent = `${formatBytes(file.size)} • Est. ${readingTime} min de leitura`;
+            const estPattern = window.Settings ? window.Settings.t('estReadingTime') : 'Est. {time} min de leitura';
+            const estString = estPattern.replace('{time}', readingTime);
+            displayFileSize.textContent = `${formatBytes(file.size)} • ${estString}`;
           }
 
           const readingCanvas = document.getElementById('reading-canvas');
@@ -2805,7 +3145,8 @@ body {
         .catch(err => {
           console.error(err);
           if (window.showToast) {
-            window.showToast('Erro ao carregar o arquivo: ' + err.message, 'error');
+            const errorMsg = window.Settings ? window.Settings.t('errorLoadingFile') : 'Erro ao carregar o arquivo: ';
+            window.showToast(errorMsg + err.message, 'error');
           }
         });
     }
@@ -2836,7 +3177,10 @@ body {
           if (readerLayout) readerLayout.classList.remove('hidden');
 
           if (displayFileName) displayFileName.textContent = state.currentFile.name;
-          if (displayFileSize) displayFileSize.textContent = 'Sessão restaurada';
+          if (displayFileSize) {
+            const sessionMsg = window.Settings ? window.Settings.t('sessionRestored') : 'Sessão restaurada';
+            displayFileSize.textContent = sessionMsg;
+          }
 
           setTimeout(() => {
             if (sessionData.scroll && readingCanvas) {
@@ -2904,6 +3248,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeBtns = document.querySelectorAll('[data-theme]'),
         fontBtns = document.querySelectorAll('[data-font]'),
         layoutBtns = document.querySelectorAll('[data-layout]'),
+        alignmentBtns = document.querySelectorAll('[data-align]'),
+        langBtns = document.querySelectorAll('[data-lang]'),
         fontSizeRange = document.getElementById('setting-font-size'),
         lineHeightRange = document.getElementById('setting-line-height'),
         maxWidthRange = document.getElementById('setting-max-width');
@@ -2942,6 +3288,8 @@ document.addEventListener('DOMContentLoaded', () => {
     themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === s.theme));
     fontBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.font === s.font));
     if (layoutBtns) layoutBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.layout === s.layout));
+    if (alignmentBtns) alignmentBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.align === s.textAlign));
+    if (langBtns) langBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === s.lang));
     if (fontSizeRange) fontSizeRange.value = s.fontSize;
     if (lineHeightRange) lineHeightRange.value = s.lineHeight;
     if (maxWidthRange) maxWidthRange.value = s.maxWidth;
@@ -2992,6 +3340,8 @@ document.addEventListener('DOMContentLoaded', () => {
         themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === s.theme));
         fontBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.font === s.font));
         if (layoutBtns) layoutBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.layout === s.layout));
+        if (alignmentBtns) alignmentBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.align === s.textAlign));
+        if (langBtns) langBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === s.lang));
         if (fontSizeRange) fontSizeRange.value = s.fontSize;
         if (lineHeightRange) lineHeightRange.value = s.lineHeight;
         if (maxWidthRange) maxWidthRange.value = s.maxWidth;
@@ -3014,6 +3364,20 @@ document.addEventListener('DOMContentLoaded', () => {
     layoutBtns.forEach(btn => btn.addEventListener('click', () => {
       if (window.Settings) window.Settings.set('layout', btn.dataset.layout);
       layoutBtns.forEach(b => b.classList.toggle('active', b === btn));
+    }));
+  }
+
+  if (alignmentBtns) {
+    alignmentBtns.forEach(btn => btn.addEventListener('click', () => {
+      if (window.Settings) window.Settings.set('textAlign', btn.dataset.align);
+      alignmentBtns.forEach(b => b.classList.toggle('active', b === btn));
+    }));
+  }
+
+  if (langBtns) {
+    langBtns.forEach(btn => btn.addEventListener('click', () => {
+      if (window.Settings) window.Settings.set('lang', btn.dataset.lang);
+      langBtns.forEach(b => b.classList.toggle('active', b === btn));
     }));
   }
 
@@ -3065,7 +3429,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const isZen = readerLayout.classList.toggle('zen-mode-active');
       if (isZen) {
         if (tocDrawer.isOpen) tocDrawer.close();
-        if (window.showToast) window.showToast('Modo Zen Ativado (Pressione Z para sair)', 'info', 2000);
+        if (window.showToast) {
+          const msg = window.Settings ? window.Settings.t('zenModeActive') : 'Modo Zen Ativado (Pressione Z para sair)';
+          window.showToast(msg, 'info', 2000);
+        }
       }
     }
 
