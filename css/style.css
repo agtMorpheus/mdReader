@@ -475,7 +475,6 @@ body {
   transition: max-width 0.3s ease, font-size 0.3s ease, line-height 0.3s ease;
   font-feature-settings: "cv02", "cv03", "cv04", "ss01";
   letter-spacing: -0.011em;
-  text-rendering: optimizeLegibility;
 }
 
 .markdown-body h1, .markdown-body h2, .markdown-body h3, 
