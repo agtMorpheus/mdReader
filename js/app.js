@@ -281,6 +281,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  function calculateReadingTime(text) {
+    const wordsPerMinute = 225;
+    const words = text.trim().split(/\s+/).length;
+    const time = Math.ceil(words / wordsPerMinute);
+    return time;
+  }
+
   /**
    * Reads, compiles and displays a markdown file
    */
@@ -307,7 +314,8 @@ document.addEventListener('DOMContentLoaded', () => {
           
           // Update file information in header
           displayFileName.textContent = file.name;
-          displayFileSize.textContent = formatBytes(file.size);
+          const readingTime = calculateReadingTime(text);
+          displayFileSize.textContent = `${formatBytes(file.size)} • Est. ${readingTime} min de leitura`;
           
           const readingCanvas = document.getElementById('reading-canvas');
           if (readingCanvas) readingCanvas.scrollTop = 0;
@@ -546,6 +554,16 @@ document.addEventListener('DOMContentLoaded', () => {
       searchInput.select();
     }
     
+    // Zen Mode Shortcut: Z
+    if ((e.key === 'z' || e.key === 'Z') && document.activeElement.tagName !== 'INPUT' && !window.Presentation?.isActive) {
+      e.preventDefault();
+      const isZen = readerLayout.classList.toggle('zen-mode-active');
+      if (isZen) {
+        if (tocDrawer.isOpen) tocDrawer.close();
+        showToast('Modo Zen Ativado (Pressione Z para sair)', 'info', 2000);
+      }
+    }
+
     // Toggle theme shortcut: 't' (when not inside inputs)
     if (e.key === 't' && document.activeElement.tagName !== 'INPUT' && !window.Presentation?.isActive) {
       if (window.Settings) {
@@ -569,8 +587,40 @@ document.addEventListener('DOMContentLoaded', () => {
   const readingCanvas = document.getElementById('reading-canvas');
   let scrollTimeout;
   
+  let lastScrollTop = 0;
+
+  const readingProgress = document.getElementById('reading-progress');
+
   if (readingCanvas) {
     readingCanvas.addEventListener('scroll', () => {
+      const currentScrollTop = readingCanvas.scrollTop;
+
+      // Reading Progress logic
+      if (readingProgress) {
+        const scrollHeight = readingCanvas.scrollHeight - readingCanvas.clientHeight;
+        const progress = scrollHeight > 0 ? (currentScrollTop / scrollHeight) * 100 : 0;
+        readingProgress.style.width = `${progress}%`;
+      }
+
+      // Scroll Fade logic
+      const scrollDelta = currentScrollTop - lastScrollTop;
+      if (scrollDelta > 0 && currentScrollTop > 30) {
+        // Scrolling down
+        if (scrollDelta > 30 || document.body.classList.contains('scroll-fade-active')) {
+           document.body.classList.add('scroll-fade-active');
+        }
+      } else if (scrollDelta < 0) {
+        // Scrolling up
+        if (Math.abs(scrollDelta) > 30 || !document.body.classList.contains('scroll-fade-active')) {
+          document.body.classList.remove('scroll-fade-active');
+        }
+      }
+
+      // Update lastScrollTop if scroll amount was large enough to change state, or just tracking continuously
+      if (Math.abs(scrollDelta) > 30) {
+        lastScrollTop = currentScrollTop;
+      }
+
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(saveSession, 500);
     });

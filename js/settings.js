@@ -31,6 +31,9 @@
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
           this.settings = { ...defaultSettings, ...JSON.parse(saved) };
+        } else {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          this.settings.theme = prefersDark ? 'dark' : 'light';
         }
       } catch (e) {
         console.warn('Unable to read from localStorage:', e);
@@ -122,7 +125,7 @@
       this.settings.font = font;
       const target = document.getElementById('render-target');
       if (target) {
-        target.classList.remove('font-sans', 'font-serif', 'font-swiss');
+        target.classList.remove('font-sans', 'font-serif', 'font-swiss', 'font-dyslexic');
         target.classList.add(`font-${font}`);
       }
     }

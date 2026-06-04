@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=Outfit:wght@300..900&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/libertinus-serif/index.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic/index.css">
   
   <!-- Stylesheets -->
   <style>
@@ -108,6 +109,9 @@ body {
 }
 .font-swiss {
   font-family: 'Inter', sans-serif;
+}
+.font-dyslexic {
+  font-family: 'OpenDyslexic', sans-serif;
 }
 
 /* Hide helper class */
@@ -550,7 +554,39 @@ body {
   overflow-y: auto;
   padding: 3rem 2rem;
   scroll-behavior: smooth;
+  position: relative;
 }
+
+#reading-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background-color: var(--primary);
+  width: 0%;
+  z-index: 1000;
+  transition: width 0.1s ease-out;
+}
+
+/* Zen Mode */
+.zen-mode-active .reader-header,
+.zen-mode-active .toc-sidebar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Scroll Fade */
+.scroll-fade-active .reader-header,
+.scroll-fade-active .toc-sidebar {
+  opacity: 0.2;
+  transition: opacity 0.3s ease;
+}
+.scroll-fade-active .reader-header:hover,
+.scroll-fade-active .toc-sidebar:hover {
+  opacity: 1;
+}
+
 
 /* Markdown Rendering Customizations */
 .markdown-body {
@@ -812,7 +848,7 @@ body {
 
 .font-buttons {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 0.5rem;
   background-color: var(--bg-sidebar);
   padding: 0.25rem;
@@ -1278,6 +1314,7 @@ body {
 
         <!-- Reading Canvas -->
         <div class="reading-canvas" id="reading-canvas">
+          <div id="reading-progress"></div>
           <article class="markdown-body font-serif" id="render-target">
             <!-- Rendered Markdown goes here -->
           </article>
@@ -1305,6 +1342,7 @@ body {
             <button class="btn-toggle" data-font="sans">Outfit</button>
             <button class="btn-toggle active" data-font="serif">Libertinus</button>
             <button class="btn-toggle" data-font="swiss">Inter</button>
+            <button class="btn-toggle" data-font="dyslexic">OpenDyslexic</button>
           </div>
         </div>
 
@@ -1407,6 +1445,9 @@ body {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
           this.settings = { ...defaultSettings, ...JSON.parse(saved) };
+        } else {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          this.settings.theme = prefersDark ? 'dark' : 'light';
         }
       } catch (e) {
         console.warn('Unable to read from localStorage:', e);
@@ -1498,7 +1539,7 @@ body {
       this.settings.font = font;
       const target = document.getElementById('render-target');
       if (target) {
-        target.classList.remove('font-sans', 'font-serif', 'font-swiss');
+        target.classList.remove('font-sans', 'font-serif', 'font-swiss', 'font-dyslexic');
         target.classList.add(`font-${font}`);
       }
     }
@@ -1752,7 +1793,7 @@ body {
     }
 
     /**
-     * Renders mermaid graphs asynchronously
+     * Renders mermaid graphs asynchronously using IntersectionObserver
      */
     renderMermaid() {
       if (typeof mermaid !== 'undefined') {
@@ -1761,9 +1802,32 @@ body {
             startOnLoad: false,
             theme: document.body.classList.contains('theme-dark') ? 'dark' : 'default'
           });
-          mermaid.run({
-            querySelector: '.mermaid'
-          });
+
+          const mermaidBlocks = document.querySelectorAll('.mermaid');
+
+          if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries, obs) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  const el = entry.target;
+                  if (!el.dataset.mermaidRendered) {
+                    try {
+                      mermaid.run({ nodes: [el] });
+                      el.dataset.mermaidRendered = 'true';
+                    } catch (err) {
+                      console.error('Error running mermaid on block:', err);
+                    }
+                  }
+                  obs.unobserve(el);
+                }
+              });
+            }, { rootMargin: '200px' });
+
+            mermaidBlocks.forEach(block => observer.observe(block));
+          } else {
+            // Fallback for older browsers without IntersectionObserver
+            mermaid.run({ querySelector: '.mermaid' });
+          }
         } catch (e) {
           console.error('Error rendering mermaid diagrams:', e);
         }
@@ -2789,6 +2853,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  function calculateReadingTime(text) {
+    const wordsPerMinute = 225;
+    const words = text.trim().split(/\s+/).length;
+    const time = Math.ceil(words / wordsPerMinute);
+    return time;
+  }
+
   /**
    * Reads, compiles and displays a markdown file
    */
@@ -2815,7 +2886,8 @@ document.addEventListener('DOMContentLoaded', () => {
           
           // Update file information in header
           displayFileName.textContent = file.name;
-          displayFileSize.textContent = formatBytes(file.size);
+          const readingTime = calculateReadingTime(text);
+          displayFileSize.textContent = `${formatBytes(file.size)} • Est. ${readingTime} min de leitura`;
           
           const readingCanvas = document.getElementById('reading-canvas');
           if (readingCanvas) readingCanvas.scrollTop = 0;
@@ -3054,6 +3126,16 @@ document.addEventListener('DOMContentLoaded', () => {
       searchInput.select();
     }
     
+    // Zen Mode Shortcut: Z
+    if ((e.key === 'z' || e.key === 'Z') && document.activeElement.tagName !== 'INPUT' && !window.Presentation?.isActive) {
+      e.preventDefault();
+      const isZen = readerLayout.classList.toggle('zen-mode-active');
+      if (isZen) {
+        if (tocDrawer.isOpen) tocDrawer.close();
+        showToast('Modo Zen Ativado (Pressione Z para sair)', 'info', 2000);
+      }
+    }
+
     // Toggle theme shortcut: 't' (when not inside inputs)
     if (e.key === 't' && document.activeElement.tagName !== 'INPUT' && !window.Presentation?.isActive) {
       if (window.Settings) {
@@ -3077,8 +3159,40 @@ document.addEventListener('DOMContentLoaded', () => {
   const readingCanvas = document.getElementById('reading-canvas');
   let scrollTimeout;
   
+  let lastScrollTop = 0;
+
+  const readingProgress = document.getElementById('reading-progress');
+
   if (readingCanvas) {
     readingCanvas.addEventListener('scroll', () => {
+      const currentScrollTop = readingCanvas.scrollTop;
+
+      // Reading Progress logic
+      if (readingProgress) {
+        const scrollHeight = readingCanvas.scrollHeight - readingCanvas.clientHeight;
+        const progress = scrollHeight > 0 ? (currentScrollTop / scrollHeight) * 100 : 0;
+        readingProgress.style.width = `${progress}%`;
+      }
+
+      // Scroll Fade logic
+      const scrollDelta = currentScrollTop - lastScrollTop;
+      if (scrollDelta > 0 && currentScrollTop > 30) {
+        // Scrolling down
+        if (scrollDelta > 30 || document.body.classList.contains('scroll-fade-active')) {
+           document.body.classList.add('scroll-fade-active');
+        }
+      } else if (scrollDelta < 0) {
+        // Scrolling up
+        if (Math.abs(scrollDelta) > 30 || !document.body.classList.contains('scroll-fade-active')) {
+          document.body.classList.remove('scroll-fade-active');
+        }
+      }
+
+      // Update lastScrollTop if scroll amount was large enough to change state, or just tracking continuously
+      if (Math.abs(scrollDelta) > 30) {
+        lastScrollTop = currentScrollTop;
+      }
+
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(saveSession, 500);
     });
