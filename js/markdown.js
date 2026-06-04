@@ -189,7 +189,7 @@
             theme: document.body.classList.contains('theme-dark') ? 'dark' : 'default'
           });
 
-          const mermaidBlocks = document.querySelectorAll('.mermaid');
+          const mermaidBlocks = document.querySelectorAll('.mermaid:not([data-mermaid-rendered="true"])');
 
           if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver((entries, obs) => {
