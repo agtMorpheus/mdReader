@@ -26,6 +26,9 @@ body {
 .font-swiss {
   font-family: 'Inter', sans-serif;
 }
+.font-dyslexic {
+  font-family: 'OpenDyslexic', sans-serif;
+}
 
 /* Hide helper class */
 .hidden {
@@ -467,7 +470,39 @@ body {
   overflow-y: auto;
   padding: 3rem 2rem;
   scroll-behavior: smooth;
+  position: relative;
 }
+
+#reading-progress {
+  position: sticky;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background-color: var(--primary);
+  width: 0%;
+  z-index: 1000;
+  transition: width 0.1s ease-out;
+}
+
+/* Zen Mode */
+.zen-mode-active .reader-header,
+.zen-mode-active .toc-sidebar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Scroll Fade */
+.scroll-fade-active .reader-header,
+.scroll-fade-active .toc-sidebar {
+  opacity: 0.2;
+  transition: opacity 0.3s ease;
+}
+.scroll-fade-active .reader-header:hover,
+.scroll-fade-active .toc-sidebar:hover {
+  opacity: 1;
+}
+
 
 /* Markdown Rendering Customizations */
 .markdown-body {
@@ -729,7 +764,7 @@ body {
 
 .font-buttons {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 0.5rem;
   background-color: var(--bg-sidebar);
   padding: 0.25rem;

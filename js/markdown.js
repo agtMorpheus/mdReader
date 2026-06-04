@@ -179,7 +179,7 @@
     }
 
     /**
-     * Renders mermaid graphs asynchronously
+     * Renders mermaid graphs asynchronously using IntersectionObserver
      */
     renderMermaid() {
       if (typeof mermaid !== 'undefined') {
@@ -188,9 +188,32 @@
             startOnLoad: false,
             theme: document.body.classList.contains('theme-dark') ? 'dark' : 'default'
           });
-          mermaid.run({
-            querySelector: '.mermaid'
-          });
+
+          const mermaidBlocks = document.querySelectorAll('.mermaid:not([data-mermaid-rendered="true"])');
+
+          if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries, obs) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  const el = entry.target;
+                  if (!el.dataset.mermaidRendered) {
+                    try {
+                      mermaid.run({ nodes: [el] });
+                      el.dataset.mermaidRendered = 'true';
+                    } catch (err) {
+                      console.error('Error running mermaid on block:', err);
+                    }
+                  }
+                  obs.unobserve(el);
+                }
+              });
+            }, { rootMargin: '200px' });
+
+            mermaidBlocks.forEach(block => observer.observe(block));
+          } else {
+            // Fallback for older browsers without IntersectionObserver
+            mermaid.run({ querySelector: '.mermaid' });
+          }
         } catch (e) {
           console.error('Error rendering mermaid diagrams:', e);
         }
