@@ -3176,21 +3176,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Scroll Fade logic
       const scrollDelta = currentScrollTop - lastScrollTop;
-      if (scrollDelta > 0 && currentScrollTop > 30) {
-        // Scrolling down
-        if (scrollDelta > 30 || document.body.classList.contains('scroll-fade-active')) {
-           document.body.classList.add('scroll-fade-active');
-        }
-      } else if (scrollDelta < 0) {
-        // Scrolling up
-        if (Math.abs(scrollDelta) > 30 || !document.body.classList.contains('scroll-fade-active')) {
-          document.body.classList.remove('scroll-fade-active');
-        }
-      }
+      lastScrollTop = currentScrollTop;
 
-      // Update lastScrollTop if scroll amount was large enough to change state, or just tracking continuously
-      if (Math.abs(scrollDelta) > 30) {
-        lastScrollTop = currentScrollTop;
+      if (scrollDelta > 0 && currentScrollTop > 30) {
+        document.body.classList.add('scroll-fade-active');
+      } else if (scrollDelta < 0) {
+        document.body.classList.remove('scroll-fade-active');
       }
 
       clearTimeout(scrollTimeout);
