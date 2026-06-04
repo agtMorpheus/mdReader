@@ -9,11 +9,11 @@
 
   const defaultSettings = {
     theme: 'light',
-    font: 'serif',
+    font: 'swiss',
     layout: 'single',
     fontSize: 18,
     lineHeight: 1.6,
-    maxWidth: 800
+    maxWidth: 65
   };
 
   class SettingsManager {
@@ -116,13 +116,13 @@
     }
 
     /**
-     * Font Toggle (Sans / Serif)
+     * Font Toggle (Sans / Serif / Swiss)
      */
     applyFont(font) {
       this.settings.font = font;
       const target = document.getElementById('render-target');
       if (target) {
-        target.classList.remove('font-sans', 'font-serif');
+        target.classList.remove('font-sans', 'font-serif', 'font-swiss');
         target.classList.add(`font-${font}`);
       }
     }
@@ -164,11 +164,11 @@
       this.settings.maxWidth = parseInt(width, 10);
       const target = document.getElementById('render-target');
       if (target) {
-        target.style.maxWidth = `${this.settings.maxWidth}px`;
+        target.style.maxWidth = `${this.settings.maxWidth}ch`;
       }
       const valLabel = document.getElementById('val-max-width');
       if (valLabel) {
-        valLabel.textContent = `${this.settings.maxWidth}px`;
+        valLabel.textContent = `${this.settings.maxWidth}ch`;
       }
     }
 

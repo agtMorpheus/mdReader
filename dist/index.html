@@ -9,7 +9,7 @@
   <!-- Google Fonts for premium typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300..900&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=Outfit:wght@300..900&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/libertinus-serif/index.css">
   
   <!-- Stylesheets -->
@@ -24,18 +24,19 @@
 
 /* Light Theme Variables */
 .theme-light {
-  --bg-app: hsl(210, 20%, 98%);
+  --bg-app: hsl(210, 20%, 99%);
   --bg-card: hsl(0, 0%, 100%);
+  --bg-card-glass: rgba(255, 255, 255, 0.85);
   --bg-sidebar: hsl(210, 20%, 96%);
   --border-color: hsl(214, 16%, 90%);
   
-  --text-main: hsl(215, 25%, 15%);
+  --text-main: #111111;
   --text-muted: hsl(215, 16%, 47%);
   --text-inverse: hsl(0, 0%, 100%);
   
-  --primary: hsl(255, 60%, 55%);
-  --primary-hover: hsl(255, 60%, 48%);
-  --primary-light: hsl(255, 60%, 94%);
+  --primary: #000000;
+  --primary-hover: #333333;
+  --primary-light: #e0e0e0;
   
   --accent: hsl(190, 70%, 45%);
   --accent-light: hsl(190, 70%, 95%);
@@ -51,18 +52,19 @@
 
 /* Dark Theme Variables */
 .theme-dark {
-  --bg-app: hsl(220, 25%, 10%);
-  --bg-card: hsl(220, 25%, 13%);
-  --bg-sidebar: hsl(220, 25%, 8%);
-  --border-color: hsl(220, 20%, 20%);
+  --bg-app: #0a0a0a;
+  --bg-card: #141414;
+  --bg-card-glass: rgba(20, 20, 20, 0.85);
+  --bg-sidebar: #0f0f0f;
+  --border-color: #2a2a2a;
   
-  --text-main: hsl(210, 20%, 90%);
-  --text-muted: hsl(215, 12%, 60%);
-  --text-inverse: hsl(220, 25%, 10%);
+  --text-main: #eeeeee;
+  --text-muted: #888888;
+  --text-inverse: #111111;
   
-  --primary: hsl(255, 75%, 70%);
-  --primary-hover: hsl(255, 75%, 76%);
-  --primary-light: hsl(255, 30%, 20%);
+  --primary: #ffffff;
+  --primary-hover: #cccccc;
+  --primary-light: #333333;
   
   --accent: hsl(190, 80%, 65%);
   --accent-light: hsl(190, 40%, 20%);
@@ -103,6 +105,9 @@ body {
 }
 .font-serif {
   font-family: 'Libertinus Serif', serif;
+}
+.font-swiss {
+  font-family: 'Inter', sans-serif;
 }
 
 /* Hide helper class */
@@ -364,7 +369,9 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1.5rem;
-  background-color: var(--bg-card);
+  background-color: var(--bg-card-glass, var(--bg-card));
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   border-bottom: 1px solid var(--border-color);
   z-index: 10;
   box-shadow: var(--shadow-sm);
@@ -549,6 +556,9 @@ body {
   line-height: 1.6;
   font-size: 18px;
   transition: max-width 0.3s ease, font-size 0.3s ease, line-height 0.3s ease;
+  font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+  letter-spacing: -0.011em;
+  text-rendering: optimizeLegibility;
 }
 
 .markdown-body h1, .markdown-body h2, .markdown-body h3, 
@@ -563,7 +573,7 @@ body {
 .markdown-body h1 { font-size: 2.2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3rem; }
 .markdown-body h2 { font-size: 1.65rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3rem; }
 .markdown-body h3 { font-size: 1.35rem; }
-.markdown-body p { margin-bottom: 1.2rem; }
+.markdown-body p { margin-bottom: 1.5rem; }
 
 .markdown-body a {
   color: var(--primary);
@@ -727,7 +737,9 @@ body {
   right: -320px;
   width: 320px;
   height: 100%;
-  background-color: var(--bg-card);
+  background-color: var(--bg-card-glass, var(--bg-card));
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   border-left: 1px solid var(--border-color);
   box-shadow: var(--shadow-lg);
   display: flex;
@@ -784,9 +796,18 @@ body {
 }
 
 /* Settings Toggle Buttons */
-.theme-buttons, .font-buttons, .layout-buttons {
+.theme-buttons, .layout-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  background-color: var(--bg-sidebar);
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+}
+
+.font-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 0.5rem;
   background-color: var(--bg-sidebar);
   padding: 0.25rem;
@@ -1278,6 +1299,7 @@ body {
           <div class="font-buttons">
             <button class="btn-toggle" data-font="sans">Outfit</button>
             <button class="btn-toggle active" data-font="serif">Libertinus</button>
+            <button class="btn-toggle" data-font="swiss">Inter</button>
           </div>
         </div>
 
@@ -1308,8 +1330,8 @@ body {
         <div class="settings-group">
           <label>Largura Máxima</label>
           <div class="range-control">
-            <input type="range" id="setting-max-width" min="600" max="1400" step="50" value="800">
-            <span class="range-val" id="val-max-width">800px</span>
+            <input type="range" id="setting-max-width" min="45" max="75" step="1" value="65">
+            <span class="range-val" id="val-max-width">65ch</span>
           </div>
         </div>
 
@@ -1358,11 +1380,11 @@ body {
 
   const defaultSettings = {
     theme: 'light',
-    font: 'serif',
+    font: 'swiss',
     layout: 'single',
     fontSize: 18,
     lineHeight: 1.6,
-    maxWidth: 800
+    maxWidth: 65
   };
 
   class SettingsManager {
@@ -1465,13 +1487,13 @@ body {
     }
 
     /**
-     * Font Toggle (Sans / Serif)
+     * Font Toggle (Sans / Serif / Swiss)
      */
     applyFont(font) {
       this.settings.font = font;
       const target = document.getElementById('render-target');
       if (target) {
-        target.classList.remove('font-sans', 'font-serif');
+        target.classList.remove('font-sans', 'font-serif', 'font-swiss');
         target.classList.add(`font-${font}`);
       }
     }
@@ -1513,11 +1535,11 @@ body {
       this.settings.maxWidth = parseInt(width, 10);
       const target = document.getElementById('render-target');
       if (target) {
-        target.style.maxWidth = `${this.settings.maxWidth}px`;
+        target.style.maxWidth = `${this.settings.maxWidth}ch`;
       }
       const valLabel = document.getElementById('val-max-width');
       if (valLabel) {
-        valLabel.textContent = `${this.settings.maxWidth}px`;
+        valLabel.textContent = `${this.settings.maxWidth}ch`;
       }
     }
 
